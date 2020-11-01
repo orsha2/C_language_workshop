@@ -1,7 +1,3 @@
-//Authors:
-//orsha    (orshahar1@mail.tau.ac.il)
-//michaelz (zhitomirsky1@mail.tau.ac.il)
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "linked_list.h"

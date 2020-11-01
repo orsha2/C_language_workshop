@@ -1,22 +1,17 @@
-//Authors:
-//orsha    (orshahar1@mail.tau.ac.il)
-//michaelz (zhitomirsky1@mail.tau.ac.il)
-
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include "UI.h"
 
+#define CMD_ARRAY_LEN 7
+#define ONE_ARG_CMD_LEN 5
+#define TWO_ARG_CMD_LEN 1
 
+typedef enum { cmd_add_start,  cmd_add_end,  cmd_del ,  cmd_index ,  cmd_add_after ,  cmd_print,  cmd_exit} commands;
 const char* CMD_ARRAY[] = { "add_start", "add_end", "del" , "index" , "add_after" , "print", "exit" };
-const int CMD_ARRAY_LEN = 7;
-
 const char* ONE_ARG_CMD[] = { "add_start","add_end", "del","index","add_after" };
-const int ONE_ARG_CMD_LEN = 5;
-
 const char* TWO_ARG_CMD[] = { "add_after" };
-const int TWO_ARG_CMD_LEN = 1;
 
 char* to_lowercase(char* p_word);
 char* my_strtok(char** p_line);
@@ -95,27 +90,28 @@ int get_cmd_index(char* p_cmd)
 
 Node* run(Node* list, char* p_cmd, int arg1, int arg2)
 {
-	switch (get_cmd_index(p_cmd))
+	commands command =get_cmd_index(p_cmd); 
+	switch (command)
 	{
-	case 0:
+	case cmd_add_start:
 		list = add_to_start(list, arg1);
 		break;
-	case 1:
+	case cmd_add_end:
 		list = add_to_end(list, arg1);
 		break;
-	case 2:
+	case cmd_del:
 		list = del_node_at_index(list, arg1);
-		break;
-	case 3:
+		break; 
+	case cmd_index:
 		printf("%d\n", get_index_via_data(list, arg1)); 
 		break; 
-	case 4:
+	case cmd_add_after:
 		list = add_after(list, arg1, arg2);
 		break;
-	case 5:
+	case cmd_print:
 		print_list(list);
 		break;
-	case 6:
+	case cmd_exit:
 		free_list(list);
 		break;
 	} 
