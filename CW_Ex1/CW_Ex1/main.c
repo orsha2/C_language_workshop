@@ -7,11 +7,9 @@
 #include "linked_list.h"
 #include "UI.h"
 
-void test_driver();
 
 int main()
 {	
-	test_driver();
 	char* p_cmd_line[MAX_LINE_LEN+1];
 	char* p_cmd;
 	int arg1, arg2;
