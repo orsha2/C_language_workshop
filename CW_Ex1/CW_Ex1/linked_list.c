@@ -1,17 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "linked_list.h"
 
 const char* err_header = "ERROR: ";
 const char* err_not_found = "data not found in list";
 const char* err_index_out_of_range = "index out of range"; 
 
+Node* new_node(int data);
 void add_node(Node* list, int new_data);
-void print_error_and_exit(Node* list, const char* header, const char* message, int info);
 Node* get_node_via_data(Node* list, int data);
 Node* get_node_via_index(Node* list, int index);
 Node* delete_node_and_return_next(Node* node);
-int is_empty(Node* list);
+bool is_empty(Node* list);
+void print_error_and_exit(Node* list, const char* header, const char* message, int info);
+
 
 Node* new_node(int data)
 {
@@ -42,7 +45,7 @@ Node* get_node_via_data(Node* list, int data)
 
 Node* get_node_via_index(Node* list, int index) 
 {
-	int i =0;
+	int i;
 	for (i = 0; i < index && list != NULL ;i++)
 		list = list->next;
 
@@ -54,14 +57,14 @@ Node* get_node_via_index(Node* list, int index)
 
 int get_index_via_data(Node* list, int data)
 {
-	int i = 0;
+	int i;
 
-	while (list != NULL) {
-		if (list->data == data) 
+	for (i = 0; list != NULL; i++, list = list->next)
+	{
+		if (list->data == data)
 			return i;
-		list = list->next;
-		i++;
 	}
+
 	return -1;
 }
 
@@ -100,7 +103,7 @@ Node* add_after(Node* list, int new_data, int existing_data)
 	return list; 
 }
 
-int is_empty(Node* list)
+bool is_empty(Node* list)
 {
 	return (list == NULL);
 }

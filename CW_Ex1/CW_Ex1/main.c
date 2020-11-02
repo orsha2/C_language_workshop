@@ -7,22 +7,25 @@
 #include "linked_list.h"
 #include "UI.h"
 
+void test_driver();
+
 int main()
 {	
-	char* p_cmd = (char*)malloc(MAX_LINE_LEN+1);
+	test_driver();
+	char* p_cmd_line[MAX_LINE_LEN+1];
+	char* p_cmd;
 	int arg1, arg2;
 	
 	Node* linked_list = NULL;
 	do {
-		scanf(" %[^\n]s", p_cmd);
+		scanf(" %[^\n]s", p_cmd_line);
 	
-		parser(p_cmd, &arg1, &arg2);
+		p_cmd = parser(p_cmd_line, &arg1, &arg2);
 		
 		linked_list = run(linked_list, p_cmd, arg1, arg2);
 		
-	} while (strcmp(p_cmd, "exit") != 0);
+	} while (strcmp(p_cmd_line, "exit") != 0);
 	
-	free(p_cmd);
 	return 0;
 	
 }
