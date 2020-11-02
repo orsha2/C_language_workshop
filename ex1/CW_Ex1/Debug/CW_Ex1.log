@@ -1,6 +1,0 @@
-﻿  UI.c
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex1\CW_Ex1\UI.c(27,8): warning C4101: 'p_str_arg': unreferenced local variable
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex1\CW_Ex1\UI.c(107,35): warning C4090: 'function': different 'const' qualifiers
-  linked_list.c
-  Generating Code...
-  CW_Ex1.vcxproj -> E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex1\Debug\CW_Ex1.exe
