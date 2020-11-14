@@ -1,4 +1,3 @@
-
 #ifndef REGEX_HANDLER_H
 #define REGEX_HANDLER_H
 
@@ -22,12 +21,12 @@ typedef struct _LineDescriptor {
 
 } LineDescriptor;
 
-typedef struct _PatternAndFlags {
+typedef struct _ExpressionAndFlags {
 	char* expression;
 
 	bool flags[FLAGS_NUM];
 
-	int a_flag_value;
+	int A_flag_value;
 
 } ExpressionAndFlags;
 

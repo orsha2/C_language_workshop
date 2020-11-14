@@ -27,6 +27,9 @@
     <ClCompile Include="common.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cmd_parser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="regex_handler.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cmd_parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

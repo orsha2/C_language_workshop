@@ -1,19 +1,4 @@
 ﻿  main.c
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(33,72): warning C4047: 'function': 'FILE *' differs in levels of indirection from 'FILE **'
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(33,64): warning C4024: 'parse_cmd_args': different types for formal and actual parameter 5
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(42,134): warning C4028: formal parameter 5 different from declaration
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(47,42): warning C4013: 'malloc' undefined; assuming extern returning int
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(49,17): warning C4047: '=': 'FILE **' differs in levels of indirection from 'FILE *'
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(52,111): warning C4020: 'free_main_resources': too many actual parameters
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(70,54): warning C4047: 'function': 'ExpressionAndFlags *' differs in levels of indirection from 'ExpressionAndFlags **'
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(70,32): warning C4024: 'initialze_expression': different types for formal and actual parameter 2
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(73,6): warning C4013: 'exit' undefined; assuming extern returning int
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(93,22): warning C4047: '=': 'char' differs in levels of indirection from 'const char *'
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(94,28): warning C4047: 'function': 'const char *' differs in levels of indirection from 'char'
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(94,19): warning C4024: 'fopen': different types for formal and actual parameter 1
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(94,34): warning C4047: '=': 'FILE **' differs in levels of indirection from 'FILE *'
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(98,123): warning C4020: 'free_main_resources': too many actual parameters
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(45,8): warning C4101: 'arg': unreferenced local variable
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(152,44): warning C4013: 'atoi' undefined; assuming extern returning int
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(178,7): warning C4013: 'free' undefined; assuming extern returning int
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(26,18): warning C4101: 'line_desc': unreferenced local variable
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(76,7): warning C4013: 'free' undefined; assuming extern returning int
   CW_Ex2.vcxproj -> E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\Debug\CW_Ex2.exe
