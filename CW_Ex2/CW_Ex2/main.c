@@ -23,12 +23,9 @@ int main(int argc, char* argv[])
 
 	FILE* f_input;
 	char* file_name = NULL;
-	LineDescriptor* line_desc;
 	ExpressionAndFlags* expression_and_flags;
 
 	return_code = parse_cmd_args(argc, argv, &expression_and_flags, &file_name);
-
-	print_expression_and_flags(expression_and_flags);
 
 	if (return_code == RETURN_CODE_ERROR)
 		return RETURN_CODE_ERROR;
@@ -38,7 +35,6 @@ int main(int argc, char* argv[])
 	else
 	{
 		f_input = fopen(file_name, "w");
-		printf("%s", file_name);
 
 		if (f_input == NULL)
 		{
