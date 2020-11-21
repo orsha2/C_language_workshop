@@ -24,10 +24,10 @@
     <ClCompile Include="regex_handler.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="common.c">
+    <ClCompile Include="cmd_parser.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cmd_parser.c">
+    <ClCompile Include="error_mgr.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,10 +38,10 @@
     <ClInclude Include="logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="common.h">
+    <ClInclude Include="cmd_parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cmd_parser.h">
+    <ClInclude Include="error_mgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

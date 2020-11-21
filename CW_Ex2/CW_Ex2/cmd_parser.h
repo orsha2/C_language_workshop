@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-int parse_cmd_args(int arg_num, char** args, ExpressionAndFlags** expression_and_flags, char** p_file_name);
+error_code_t parse_cmd_args(int arg_num, char** args, regex_and_flags** expression_and_flags, char** p_file_name);
 
 
 
