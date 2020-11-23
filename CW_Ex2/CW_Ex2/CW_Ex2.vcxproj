@@ -21,14 +21,14 @@
   <ItemGroup>
     <ClCompile Include="cmd_parser.c" />
     <ClCompile Include="error_mgr.c" />
-    <ClCompile Include="logger.c" />
+    <ClCompile Include="my_grep.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="regex_handler.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cmd_parser.h" />
     <ClInclude Include="error_mgr.h" />
-    <ClInclude Include="logger.h" />
+    <ClInclude Include="my_grep.h" />
     <ClInclude Include="regex_handler.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

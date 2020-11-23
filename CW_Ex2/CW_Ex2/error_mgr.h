@@ -16,7 +16,7 @@ typedef enum {
     MUTEX_RELEASE_FAILED,
     ILLEGAL_LETTER_WAS_READ,
     RETURN_CODE_ERROR,
-} error_code_t;
+} Error_Code_t;
 
 extern const char* MSG_ERR_NUM_ARGS;
 extern const char* MSG_ERR_CANNOT_OPEN_FILE;

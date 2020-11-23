@@ -1,8 +1,4 @@
-﻿  main.c
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(38,34): warning C4013: 'initialize_input_stream' undefined; assuming extern returning int
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(50,23): warning C4133: 'function': incompatible types - from 'LineDescriptor *' to 'FILE *'
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(50,36): warning C4133: 'function': incompatible types - from 'char [500]' to 'LineDescriptor *'
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(69,32): warning C4028: formal parameter 1 different from declaration
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(69,49): warning C4028: formal parameter 2 different from declaration
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(71,6): warning C4101: 'return_code': unreferenced local variable
+﻿  my_grep.c
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\my_grep.c(37,70): warning C4133: 'function': incompatible types - from 'Regex_And_Flags *' to 'bool *'
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\my_grep.c(50,20): warning C4018: '<': signed/unsigned mismatch
   CW_Ex2.vcxproj -> E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\Debug\CW_Ex2.exe
