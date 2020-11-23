@@ -3,6 +3,7 @@
 #include <stdio.h> 
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #include "my_grep.h" 
 
@@ -16,34 +17,43 @@ typedef struct _Line_Descriptor {
 void print_expression_and_flags(Regex_And_Flags* expression_and_flags, char* expression);
 void print_regex(Regex_And_Flags* my_regex_and_flags);
 void init_line(Line_Descriptor* line_desc, char* line_buffer);
-bool check_is_matching_line(Line_Descriptor* line_desc, Regex_And_Flags* my_regex_and_flags);
+bool check_if_matching_line(Line_Descriptor* line_desc, Regex_And_Flags* my_regex_and_flags);
 bool is_matching_expression(char* line, Regex_Block* regex_blocks,  int regex_block_num, bool* flags);
 void print_if_matching(Line_Descriptor* line_desc, bool is_matching, bool* flags); 
+char* to_lowercase(char* line); 
 
 Error_Code_t grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_flags)
-{
-	char line_buffer[500]; // <------------------------------------------------------------------------ Change this to support getline
+{	
 
 	Line_Descriptor line_desc = { NULL, 0, 0 };
 
-	void* scan_status = fgets(line_buffer, 500, input_stream);
+	//-----------------------------
+	char* line = (char*)malloc(500 * sizeof(char)); 
+	void* status = fgets(line ,input_stream, input_stream); // getline
+	//-----------------------------
+
 	bool is_matching_line;
 
-	while (scan_status != NULL)
+	while (status != NULL)
 	{
-		init_line(&line_desc, line_buffer);
 
-		is_matching_line = check_is_matching_line (&line_desc , my_regex_and_flags);
-		print_if_matching(&line_desc, is_matching_line, my_regex_and_flags );
+		init_line(&line_desc, line);
+
+		is_matching_line = check_if_matching_line (&line_desc , my_regex_and_flags);
+		print_if_matching(&line_desc, is_matching_line, my_regex_and_flags->flags);
 
 		//printf("line: %s", line_buffer);
-		scan_status = fgets(line_buffer, 500, input_stream);
+
+		//-----------------------------
+		status = fgets(line, input_stream, input_stream); // getline
+		//-----------------------------
+
 	}
 	return SUCCESS_CODE; 
 }
 
 
-bool check_is_matching_line (Line_Descriptor* line_desc, Regex_And_Flags* my_regex_and_flags)
+bool check_if_matching_line (Line_Descriptor* line_desc, Regex_And_Flags* my_regex_and_flags)
 {
 	char* line = line_desc->line; 
 	bool is_matching = false;
@@ -62,9 +72,7 @@ bool check_is_matching_line (Line_Descriptor* line_desc, Regex_And_Flags* my_reg
 	return is_matching;
 }
 
-
-
-bool is_matching_expression(char* line, Regex_Block* regex_blocks,  int regex_block_num, bool* flags)
+bool is_matching_expression(char* line, Regex_Block* regex_blocks, int regex_block_num, bool* flags)
 {
 	//printf("%s\n", line);
 	if (regex_block_num == 0)
@@ -74,25 +82,44 @@ bool is_matching_expression(char* line, Regex_Block* regex_blocks,  int regex_bl
 
 	switch (regex_blocks->type)
 	{
-		case REGEX_TYPE_DOT:
-			return is_matching_expression(line+1, regex_blocks+1, regex_block_num-1, flags);
-			
-		case REGEX_TYPE_REGULAR_CHAR:
-			if (*line != regex_blocks->regex_block_contents.regular_char)
-				return false;
-			return is_matching_expression(line+1, regex_blocks+1, regex_block_num-1, flags);
+	case REGEX_TYPE_DOT:
+		return is_matching_expression(line + 1, regex_blocks + 1, regex_block_num - 1, flags);
 
-		case REGEX_TYPE_PARENTHESES:
-			// TODO
-			break;
+	case REGEX_TYPE_REGULAR_CHAR:
+		if (*line != regex_blocks->regex_block_contents.regular_char)
+			return false;
+		return is_matching_expression(line + 1, regex_blocks + 1, regex_block_num - 1, flags);
 
-		case REGEX_TYPE_BRACKETS:
-			// TODO
-			break;
+	case REGEX_TYPE_PARENTHESES:
+		// TODO
+		break;
+
+	case REGEX_TYPE_BRACKETS:
+		// TODO
+		break;
 
 	}
 	return true;
 }
+
+void print_if_matching(Line_Descriptor* line_desc, bool is_matching, bool* flags)
+{
+	if (is_matching == false)
+		return;
+
+	if (flags[B_FLAG])
+		printf("%d: %s", line_desc->byte_counter - strlen(line_desc->line), line_desc->line);
+
+	else if (flags[N_FLAG])
+		printf("%d: %s", line_desc->line_counter, line_desc->line);
+
+	else if (flags[C_FLAG])
+		printf("%d", line_desc->line_counter);
+
+	else printf("%s", line_desc->line);
+}
+
+
 
 void init_line(Line_Descriptor* line_desc, char* line_buffer)
 {
@@ -111,38 +138,63 @@ void init_line(Line_Descriptor* line_desc, char* line_buffer)
 	//return return_code; 
 }
 
-void print_if_matching(Line_Descriptor* line_desc, bool is_matching, bool* flags)
+/*
+char* to_lowercase(char* line)
 {
-	if (!is_matching)
-		return;
-
-	
-	if (flags[N_FLAG]) 
+	char* p_start = line;
+	while (*line != '\0')
 	{
-		printf("%d: %s\n", line_desc->line_counter, line_desc->line);
-		return; 
+		*line = tolower(*line);
+		line++;
 	}
-
-	if (flags[C_FLAG])
-	{
-		printf("%d\n", line_desc->line_counter);
-		return;
-	}
-
-	if (flags[B_FLAG])
-	{
-	//	printf("%d: %s\n", line_desc->byte_counter - strlen(line_desc->line), line_desc->line);
-		return;
-	}
-
-	printf("%s\n", line_desc->line);
+	return p_start;
 }
 
+bool compare_chars(const char first_char, const char second_char, bool is_case_sensitive) 
+{
+	if (is_case_sensitive)
+		return (first_char == second_char);
 
+	return (tolower(first_char) == tolower(second_char));
+}
 
+bool compare_strings(const char* first_str, const char* second_str, bool is_case_sensitive)
+{
+	if (is_case_sensitive)
+		return (first_char == second_char);
 
+	return (tolower(first_char) == tolower(second_char));
+	
+	while (*first_str != '\0' && *second_str != '\0')
+	{
+		if (is_case_sensitive)
+			if (*first_str != *second_str)
+				return false;
 
+		first_str++;
+		second_str++;
+	}
 
+	if (*first_str != '\0' || *second_str != '\0')
+		return false;
+
+	return true;
+}
+
+Error_Code_t read_line_from_stream(FILE** input_stream, char* line_buffer, int line_len)
+{
+	if (line_buffer == NULL)
+		line_buffer = (char*)malloc(line_len * sizeof(char));
+
+	if (line_buffer == NULL)
+	{
+		print_error(MSG_ERR_MEM_ALLOC, __FILE__, __LINE__, __func__);
+		return MEM_ALLOC_ERROR;
+	}
+	line_buffer = fgets(line_buffer, line_len, *input_stream);
+	return SUCCESS_CODE;
+
+}*/
 
 
 

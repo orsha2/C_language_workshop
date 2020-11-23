@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 
 	//printf("-------------------------------------\n");
 	print_expression_and_flags(my_regex_and_flags, expression);
-	//printf("-------------------------------------\n");
+	printf("-------------------------------------\n");
 	//print_regex(my_regex_and_flags);
 
 	grep_execute_on_stream(f_input, my_regex_and_flags); 
