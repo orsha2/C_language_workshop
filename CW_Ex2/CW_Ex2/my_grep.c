@@ -3,6 +3,7 @@
 #include <stdio.h> 
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include "my_grep.h" 
 
@@ -29,7 +30,7 @@ Error_Code_t grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_rege
 
 	//-----------------------------
 	char* line = (char*)malloc(500 * sizeof(char)); 
-	void* fgets_status = fgets(line ,input_stream, input_stream); // getline
+	void* fgets_status = fgets(line , 500 , input_stream); // getline
 	//-----------------------------
 
 	bool is_matching_line;
@@ -42,10 +43,11 @@ Error_Code_t grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_rege
 		print_if_matching(&line_desc, is_matching_line, my_regex_and_flags->flags);
 
 		//-----------------------------
-		fgets_status = fgets(line, input_stream, input_stream); // getline
+		fgets_status = fgets(line, 500 , input_stream); // getline
 		//-----------------------------
 
 	}
+	free(line);
 	return status;
 }
 
@@ -54,7 +56,7 @@ bool check_if_matching_line (Line_Descriptor* line_desc, Regex_And_Flags* my_reg
 {
 	char* line = line_desc->line; 
 	bool is_matching = false;
-	for (int i = 0; i < strlen(line_desc->line); i++)
+	for (size_t i = 0; i < strlen(line_desc->line); i++)
 	{
 		is_matching = is_matching_expression(line + i, my_regex_and_flags->regex_array,
 			my_regex_and_flags->regex_array_len, my_regex_and_flags->flags);
@@ -105,7 +107,7 @@ void print_if_matching(Line_Descriptor* line_desc, bool is_matching, bool* flags
 		return;
 
 	if (flags[B_FLAG])
-		printf("%d: %s", line_desc->byte_counter - strlen(line_desc->line), line_desc->line);
+		printf("%ld: %s", line_desc->byte_counter - strlen(line_desc->line), line_desc->line);
 
 	else if (flags[N_FLAG])
 		printf("%d: %s", line_desc->line_counter, line_desc->line);
@@ -146,7 +148,7 @@ bool compare_chars(const char first_char, const char second_char, bool is_case_i
 bool compare_strings(const char* first_str, const char* second_str, bool is_case_insensitive)
 {
 	if (is_case_insensitive)
-		return (_stricmp(first_str, second_str) == 0); // CHANGE THIS TO strcasecmp 
+		return (strcasecmp(first_str, second_str) == 0); // CHANGE THIS TO strcasecmp 
 
 	return (strcmp(first_str, second_str) == 0); 
 	

@@ -22,12 +22,12 @@ const char* FLAGS_STR_ARRAY[] = { "-i", "-v", "-c", "-n", "-x", "-b", "-E", "-A"
 
 Error_Code_t init_regex_block_and_advance_expression(Regex_Block* current_regex_block, char** p_rest_of_expression);
 int get_bracket_block_end(char* expression, int index);
-Error_Code_t set_parentheses_block_return_status(char* parentheses_block_start, Regex_Block* current_regex_block);
+Error_Code_t set_parentheses_block_return_status(char** p_parentheses_block_start, Regex_Block* current_regex_block);
 void set_parentheses_block_contents(Regex_Block_Contents* regex_block_contents, char* left_side, char* right_side);
 char* set_bracket_block(char* bracket_block_start, Regex_Block* current_regex_block);
 void set_regular_char_block(char regular_char, Regex_Block* current_regex_block);
 
-void strcpy_until_char(char** p_dest, const char** p_source, char end_char);
+void strcpy_until_char(char** p_dest, char** p_source, char end_char);
 int get_bracket_block_end(char* expression, int index);
 int count_amount_of_regex_blocks(char* expression);
 Char_Type classify_char_type(char my_char);
@@ -65,8 +65,7 @@ Error_Code_t initialize_regex_array(char* expression, Regex_Block** p_regex_arra
 
 
 Error_Code_t init_regex_block_and_advance_expression(Regex_Block* current_regex_block, char** p_rest_of_expression)
-{
-	int index;	
+{	
 	Char_Type current_char_type;
 	char* rest_of_expression = *p_rest_of_expression;
 	Error_Code_t status = SUCCESS_CODE;
@@ -95,6 +94,11 @@ Error_Code_t init_regex_block_and_advance_expression(Regex_Block* current_regex_
 
 	case CHAR_BRACKETS_START:
 		rest_of_expression = set_bracket_block(rest_of_expression, current_regex_block);
+		break;
+
+	case CHAR_PARENTHESES_END:
+        case CHAR_BRACKETS_END:	
+	case CHAR_APOSTROPHE:
 		break;
 	}
 	rest_of_expression++;
@@ -136,7 +140,7 @@ Error_Code_t set_parentheses_block_return_status(char** p_parentheses_block_star
 	return SUCCESS_CODE;
 }
 
-void strcpy_until_char(char** p_dest , const char** p_source, char end_char)
+void strcpy_until_char(char** p_dest , char** p_source, char end_char)
 { 
 
 	while (**p_source != end_char && **p_source != '\0')
@@ -171,7 +175,8 @@ char* set_bracket_block(char* bracket_block_start, Regex_Block* current_regex_bl
 
 int count_amount_of_regex_blocks(char* expression)
 {
-	int block_counter = 0, current_char_index = 0;
+	int block_counter = 0; 
+	size_t current_char_index = 0;
 	char current_char; 
 	Char_Type current_char_type;
 
@@ -197,6 +202,12 @@ int count_amount_of_regex_blocks(char* expression)
 			block_counter++;
 			current_char_index = get_bracket_block_end(expression, current_char_index);
 			break;
+
+		case CHAR_PARENTHESES_END:
+		case CHAR_BRACKETS_END:
+		case CHAR_APOSTROPHE:
+			break; 
+
 		}
 		current_char_index++;
 	}

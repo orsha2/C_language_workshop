@@ -5,7 +5,7 @@
 #include "error_mgr.h"
 
 void initialze_flags(bool flags_array[]); 
-Flag load_flag_and_update_index( char** args, int i, Regex_And_Flags* expression_and_flags);
+Flag load_flag_and_update_index( char** args, int *index, Regex_And_Flags* expression_and_flags);
 int get_flag_index(const char* current_flag);
 
 
