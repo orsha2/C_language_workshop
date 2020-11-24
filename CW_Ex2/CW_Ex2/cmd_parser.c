@@ -5,7 +5,7 @@
 #include "error_mgr.h"
 
 void initialze_flags(bool flags_array[]); 
-Flag load_flag_and_update_index( char** args, int *index, Regex_And_Flags* expression_and_flags);
+Flag load_flag_and_update_index( char** args, int *index, Regex_And_Flags* my_regex_and_flags);
 int get_flag_index(const char* current_flag);
 
 
@@ -52,18 +52,18 @@ void initialze_flags(bool flags_array[])
 	
 }
 
-Flag load_flag_and_update_index( char** args, int *index, Regex_And_Flags* expression_and_flags)
+Flag load_flag_and_update_index( char** args, int *index, Regex_And_Flags* my_regex_and_flags)
 {
 	Flag current_flag = get_flag_index(args[*index]);
 
 	if (current_flag == NOT_A_FLAG)
 		return NOT_A_FLAG;
 
-	expression_and_flags->flags[current_flag] = true;
+	my_regex_and_flags->flags[current_flag] = true;
 
 	if (current_flag == A_FLAG)
 	{
-		expression_and_flags->A_flag_value = atoi(args[*index + 1]);
+		my_regex_and_flags->A_flag_value = atoi(args[*index + 1]);
 		(*index)++;
 	}
 

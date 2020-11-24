@@ -13,7 +13,7 @@ typedef struct _Line_Descriptor {
 	int   byte_counter;
 } Line_Descriptor;
 
-void print_expression_and_flags(Regex_And_Flags* expression_and_flags, char* expression);
+void print_expression_and_flags(Regex_And_Flags* my_regex_and_flags, char* expression);
 void print_regex(Regex_And_Flags* my_regex_and_flags);
 void update_line_descriptor(Line_Descriptor* line_desc, char* line_buffer);
 bool check_if_matching_line(Line_Descriptor* line_desc, Regex_And_Flags* my_regex_and_flags);
@@ -46,7 +46,8 @@ Error_Code_t grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_rege
 		fgets_status = fgets(line, 500 , input_stream); // getline
 		//-----------------------------
 
-	}
+	} 
+
 	free(line);
 	return status;
 }
