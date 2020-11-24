@@ -18,9 +18,6 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="regex_handler.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cmd_parser.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -30,11 +27,11 @@
     <ClCompile Include="my_grep.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="init_regex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="regex_handler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cmd_parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -42,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="my_grep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="init_regex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

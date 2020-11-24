@@ -23,13 +23,13 @@
     <ClCompile Include="error_mgr.c" />
     <ClCompile Include="my_grep.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="regex_handler.c" />
+    <ClCompile Include="init_regex.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cmd_parser.h" />
     <ClInclude Include="error_mgr.h" />
     <ClInclude Include="my_grep.h" />
-    <ClInclude Include="regex_handler.h" />
+    <ClInclude Include="init_regex.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

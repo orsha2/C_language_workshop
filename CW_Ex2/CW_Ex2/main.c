@@ -4,21 +4,21 @@
 #include <stdlib.h>
 #include "error_mgr.h"
 #include "cmd_parser.h"
-#include "regex_handler.h"
+#include "init_regex.h"
 #include "my_grep.h"
 
 
 Error_Code_t initialize_input_stream(char* file_name, FILE** p_f_input);
-void free_main_resources(const char* msg, const char* file, int line, const char* func_name, Regex_And_Flags* pattern_and_flags);
+void free_main_resources(FILE* input_stream, Regex_And_Flags* pattern_and_flags);
 
 int main(int argc, char* argv[])
 {
 	Error_Code_t status;
 
-	FILE* f_input = NULL;
+	FILE* input_stream = NULL;
 	char* file_name = NULL;
 	char* expression;
-	Regex_And_Flags* my_regex_and_flags;
+	Regex_And_Flags* my_regex_and_flags = NULL;
 
 	if (argc < 2)
 	{
@@ -37,30 +37,19 @@ int main(int argc, char* argv[])
 	if (status != SUCCESS_CODE)
 		goto main_exit;
 	
-	status = initialize_input_stream(file_name, &f_input); 
+	status = initialize_input_stream(file_name, &input_stream); 
 
 	if (status != SUCCESS_CODE)
 		goto main_exit;
 
-	//printf("%d\n", f_input);
-
-	//printf("-------------------------------------\n");
-	print_expression_and_flags(my_regex_and_flags, expression);
-	printf("-------------------------------------\n");
-	//print_regex(my_regex_and_flags);
-
-	grep_execute_on_stream(f_input, my_regex_and_flags); 
+	status = grep_execute_on_stream(input_stream, my_regex_and_flags);
 
 main_exit:
-	if (f_input != NULL)
-		fclose(f_input);
 
-	//free_main_resources();
+	free_main_resources(input_stream, my_regex_and_flags);
 
 	return status;
 }
-
-
 
 Error_Code_t initialize_input_stream(char* file_name, FILE** p_f_input)
 {
@@ -82,13 +71,27 @@ Error_Code_t initialize_input_stream(char* file_name, FILE** p_f_input)
 	return SUCCESS_CODE; 
 }
 
-void free_main_resources(const char* msg, const char* file, int line, const char* func_name,
-					 Regex_And_Flags* pattern_and_flags) 
+void free_main_resources(FILE* input_stream,
+					 Regex_And_Flags* my_regex_and_flags)
 {
-	print_error(msg, file, line, func_name);
+	if (input_stream != NULL)
+		fclose(input_stream);
 
-	if (pattern_and_flags != NULL)
-		free(pattern_and_flags);
+	if (my_regex_and_flags == NULL)
+		return; 
 
+	Regex_Block* regex_array = my_regex_and_flags->regex_array; 
+	for (int i = 0; i < my_regex_and_flags->regex_array_len; i++)
+	{
+		if (regex_array->type != REGEX_TYPE_PARENTHESES)
+			continue;
+		if (regex_array->regex_block_contents.parentheses_block.left_side !=NULL)
+			free(regex_array->regex_block_contents.parentheses_block.left_side);
+		if (regex_array->regex_block_contents.parentheses_block.right_side !=NULL)
+			free(regex_array->regex_block_contents.parentheses_block.right_side);
+
+	}
+	free(regex_array); 
+	free(my_regex_and_flags);
 }
 

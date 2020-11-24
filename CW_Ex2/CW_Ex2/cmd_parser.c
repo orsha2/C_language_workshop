@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "regex_handler.h"
+#include "init_regex.h"
 #include "error_mgr.h"
 
 void initialze_flags(bool flags_array[]); 
@@ -48,9 +48,8 @@ void initialze_flags(bool flags_array[])
 	Flag current_flag;
 
 	for (current_flag = FLAGS_START; current_flag < FLAGS_END; current_flag++)
-	{
 		flags_array[current_flag] = false;
-	}
+	
 }
 
 Flag load_flag_and_update_index( char** args, int *index, Regex_And_Flags* expression_and_flags)

@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
-
 #include "my_grep.h" 
 
 typedef struct _Line_Descriptor {
@@ -13,43 +12,41 @@ typedef struct _Line_Descriptor {
 	int   byte_counter;
 } Line_Descriptor;
 
-
 void print_expression_and_flags(Regex_And_Flags* expression_and_flags, char* expression);
 void print_regex(Regex_And_Flags* my_regex_and_flags);
-void init_line(Line_Descriptor* line_desc, char* line_buffer);
+void update_line_descriptor(Line_Descriptor* line_desc, char* line_buffer);
 bool check_if_matching_line(Line_Descriptor* line_desc, Regex_And_Flags* my_regex_and_flags);
 bool is_matching_expression(char* line, Regex_Block* regex_blocks,  int regex_block_num, bool* flags);
 void print_if_matching(Line_Descriptor* line_desc, bool is_matching, bool* flags); 
-char* to_lowercase(char* line); 
+bool compare_chars(const char first_char, const char second_char, bool is_case_insensitive);
+bool compare_strings(const char* first_str, const char* second_str, bool is_case_insensitive); 
+
 
 Error_Code_t grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_flags)
 {	
-
+	Error_Code_t status = SUCCESS_CODE; 
 	Line_Descriptor line_desc = { NULL, 0, 0 };
 
 	//-----------------------------
 	char* line = (char*)malloc(500 * sizeof(char)); 
-	void* status = fgets(line ,input_stream, input_stream); // getline
+	void* fgets_status = fgets(line ,input_stream, input_stream); // getline
 	//-----------------------------
 
 	bool is_matching_line;
 
-	while (status != NULL)
+	while (fgets_status != NULL)
 	{
-
-		init_line(&line_desc, line);
+		update_line_descriptor(&line_desc, line);
 
 		is_matching_line = check_if_matching_line (&line_desc , my_regex_and_flags);
 		print_if_matching(&line_desc, is_matching_line, my_regex_and_flags->flags);
 
-		//printf("line: %s", line_buffer);
-
 		//-----------------------------
-		status = fgets(line, input_stream, input_stream); // getline
+		fgets_status = fgets(line, input_stream, input_stream); // getline
 		//-----------------------------
 
 	}
-	return SUCCESS_CODE; 
+	return status;
 }
 
 
@@ -74,9 +71,9 @@ bool check_if_matching_line (Line_Descriptor* line_desc, Regex_And_Flags* my_reg
 
 bool is_matching_expression(char* line, Regex_Block* regex_blocks, int regex_block_num, bool* flags)
 {
-	//printf("%s\n", line);
 	if (regex_block_num == 0)
 		return true;
+
 	if (*line == '\0')
 		return false;
 
@@ -86,7 +83,7 @@ bool is_matching_expression(char* line, Regex_Block* regex_blocks, int regex_blo
 		return is_matching_expression(line + 1, regex_blocks + 1, regex_block_num - 1, flags);
 
 	case REGEX_TYPE_REGULAR_CHAR:
-		if (*line != regex_blocks->regex_block_contents.regular_char)
+		if (compare_chars(*line, regex_blocks->regex_block_contents.regular_char, flags[I_FLAG]) == false)
 			return false;
 		return is_matching_expression(line + 1, regex_blocks + 1, regex_block_num - 1, flags);
 
@@ -114,14 +111,14 @@ void print_if_matching(Line_Descriptor* line_desc, bool is_matching, bool* flags
 		printf("%d: %s", line_desc->line_counter, line_desc->line);
 
 	else if (flags[C_FLAG])
-		printf("%d", line_desc->line_counter);
+		printf("%d\n", line_desc->line_counter);
 
 	else printf("%s", line_desc->line);
 }
 
 
 
-void init_line(Line_Descriptor* line_desc, char* line_buffer)
+void update_line_descriptor(Line_Descriptor* line_desc, char* line_buffer)
 {
 	int line_counter = 0;
 	int bytes_counter = 0;
@@ -135,52 +132,27 @@ void init_line(Line_Descriptor* line_desc, char* line_buffer)
 	line_desc->line_counter = line_counter;
 	line_desc->byte_counter = bytes_counter;
 
-	//return return_code; 
+}
+
+
+bool compare_chars(const char first_char, const char second_char, bool is_case_insensitive) 
+{
+	if (is_case_insensitive)
+		return (tolower(first_char) == tolower(second_char));
+
+	return (first_char == second_char);
+}
+
+bool compare_strings(const char* first_str, const char* second_str, bool is_case_insensitive)
+{
+	if (is_case_insensitive)
+		return (_stricmp(first_str, second_str) == 0); // CHANGE THIS TO strcasecmp 
+
+	return (strcmp(first_str, second_str) == 0); 
+	
 }
 
 /*
-char* to_lowercase(char* line)
-{
-	char* p_start = line;
-	while (*line != '\0')
-	{
-		*line = tolower(*line);
-		line++;
-	}
-	return p_start;
-}
-
-bool compare_chars(const char first_char, const char second_char, bool is_case_sensitive) 
-{
-	if (is_case_sensitive)
-		return (first_char == second_char);
-
-	return (tolower(first_char) == tolower(second_char));
-}
-
-bool compare_strings(const char* first_str, const char* second_str, bool is_case_sensitive)
-{
-	if (is_case_sensitive)
-		return (first_char == second_char);
-
-	return (tolower(first_char) == tolower(second_char));
-	
-	while (*first_str != '\0' && *second_str != '\0')
-	{
-		if (is_case_sensitive)
-			if (*first_str != *second_str)
-				return false;
-
-		first_str++;
-		second_str++;
-	}
-
-	if (*first_str != '\0' || *second_str != '\0')
-		return false;
-
-	return true;
-}
-
 Error_Code_t read_line_from_stream(FILE** input_stream, char* line_buffer, int line_len)
 {
 	if (line_buffer == NULL)
@@ -198,7 +170,7 @@ Error_Code_t read_line_from_stream(FILE** input_stream, char* line_buffer, int l
 
 
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void print_expression_and_flags(Regex_And_Flags* my_regex_and_flags, char* expression)
 {
 
@@ -241,3 +213,74 @@ void print_regex(Regex_And_Flags* my_regex_and_flags)
 	}
 	printf("\n");
 }
+
+
+
+
+/*
+bla
+----------------
+BLABb
+erg erg
+g reg erg reg
+vgb
+efv
+blabfew
+blala ge ger
+		rth rth bla
+BlA
+blA
+ regb
+ befwb
+ ----------------
+ blabfew
+blala ge ger
+				rth rth bla
+
+				rth rth bla
+------------------
+bli
+
+bla
+
+
+
+		blu
+
+
+blgrgbla ?!#
+53523905?!bla!-
+------------------
+
+
+3: bla
+10: blgrgbla ?!#
+11: 53523905?!bla!-
+-----------------------
+bli
+
+bla
+
+
+
+		blu
+
+
+blgrgbla ?!#
+53523905?!bla!-
+
+BLA
+B12la bLa
+BLU bLA
+
+
+-------------------------
+3: bla
+10: blgrgbla ?!#
+11: 53523905?!bla!-
+13: BLA
+14: B12la bLa
+15: BLU bLA
+-------------------------
+
+*/

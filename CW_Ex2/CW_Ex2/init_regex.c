@@ -1,7 +1,7 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "regex_handler.h"
+#include "init_regex.h"
 #include "error_mgr.h"
 
 #define FIRST_CHAR_IN_STR  0 
@@ -39,7 +39,7 @@ Error_Code_t initialize_regex_array(char* expression, Regex_Block** p_regex_arra
 	int index;
 	*p_regex_array_len = count_amount_of_regex_blocks(expression);
 	*p_regex_array = (Regex_Block*)malloc(sizeof(Regex_Block) * (*p_regex_array_len));
-	Regex_Block* regex_array = *p_regex_array;
+	Regex_Block* regex_array = *p_regex_array; 
 
 	if (regex_array == NULL)
 	{
@@ -66,11 +66,12 @@ Error_Code_t initialize_regex_array(char* expression, Regex_Block** p_regex_arra
 
 Error_Code_t init_regex_block_and_advance_expression(Regex_Block* current_regex_block, char** p_rest_of_expression)
 {
-	char* rest_of_expression = *p_rest_of_expression;
+	int index;	
 	Char_Type current_char_type;
-	int index;
-	current_char_type = classify_char_type(*rest_of_expression);
+	char* rest_of_expression = *p_rest_of_expression;
 	Error_Code_t status = SUCCESS_CODE;
+
+	current_char_type = classify_char_type(*rest_of_expression);
 
 	switch (current_char_type)
 	{
@@ -96,7 +97,6 @@ Error_Code_t init_regex_block_and_advance_expression(Regex_Block* current_regex_
 		rest_of_expression = set_bracket_block(rest_of_expression, current_regex_block);
 		break;
 	}
-
 	rest_of_expression++;
 	*p_rest_of_expression = rest_of_expression;
 
