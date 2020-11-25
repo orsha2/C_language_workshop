@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="cmd_parser.c" />
     <ClCompile Include="error_mgr.c" />
+    <ClCompile Include="helpers.c" />
     <ClCompile Include="my_grep.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="init_regex.c" />
@@ -28,6 +29,7 @@
   <ItemGroup>
     <ClInclude Include="cmd_parser.h" />
     <ClInclude Include="error_mgr.h" />
+    <ClInclude Include="helpers.h" />
     <ClInclude Include="my_grep.h" />
     <ClInclude Include="init_regex.h" />
   </ItemGroup>
