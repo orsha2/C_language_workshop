@@ -8,7 +8,7 @@ echo "${RED}~~~~ PRE TEST  ~~~\n${NC}"
 
 echo "${Gre}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n${NC}"
 echo "${RED}~~~~ CLANG FORMAT ~~~\n${NC}"
-clang-format -i *.c *.h 
+clang-format -style=file -i *.c *.h 
 
 echo "${Gre}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n${NC}"
 echo "${RED}~~~~ GCC *.C ~~~\n${NC}"
