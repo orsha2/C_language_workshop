@@ -27,15 +27,14 @@ int read_line(char** p_line, FILE* input_stream);
 void grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_flags)
 {
     Line_Descriptor line_desc = { NULL, 0, 0 };
-    size_t line_size = 0;
-    char* line = NULL;
+    char* line;
     bool is_matching_line, to_print;
     bool is_first_matching_block = true;
-
+    ssize_t line_size = 0 ;  
     int matching_line_counter = 1, lines_to_print = 0;
-    int readline_status = read_line(&line, input_stream);
-
-    while (readline_status >= 0)
+    ssize_t status = getline(&line, &line_size, input_stream);
+    
+    while (status >= 0)
     {
         update_line_descriptor(&line_desc, line);
 
@@ -52,14 +51,16 @@ void grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_fl
         if (is_matching_line)
             is_first_matching_block = false;
      
+	
 
-        readline_status = read_line(&line, input_stream);
+        status = getline(&line, &line_size, input_stream);
+	
     }
     
     if (my_regex_and_flags->flags[C_FLAG])
         printf("%d", matching_line_counter);
 
-    free(line);
+   free(line);
 }
 
 
@@ -116,7 +117,7 @@ bool is_matching_expression_at_place(char* line, Regex_Block* regex_blocks, int 
         return true;
     }
 
-    if (*line == '\0')
+    if (*line == '\0'|| *line == '\n')
         return false;
 
     switch (regex_blocks->type)
@@ -151,19 +152,19 @@ void grep_printer(Line_Descriptor* line_desc, bool is_matching, bool* flags, boo
     if (is_matching) 
     {
         if(flags[A_FLAG] && (is_first_matching_block==false))
-            printf("%s\n", header_separator);
+            printf("%s", header_separator);
     }
 
     else separator = '-';
 
     if (flags[B_FLAG])
-        printf("%ld%c%s\n", line_desc->byte_counter - strlen(line_desc->line), separator, line_desc->line);
+        printf("%ld%c%s", line_desc->byte_counter - strlen(line_desc->line), separator, line_desc->line);
 
     else if (flags[N_FLAG])
-        printf("%d%c%s\n", line_desc->line_counter, separator, line_desc->line);
+        printf("%d%c%s", line_desc->line_counter, separator, line_desc->line);
 
     else 
-        printf("%s\n", line_desc->line);
+        printf("%s", line_desc->line);
 }
 
 void update_line_descriptor(Line_Descriptor* line_desc, char* line_buffer)
@@ -182,9 +183,9 @@ void update_line_descriptor(Line_Descriptor* line_desc, char* line_buffer)
 bool compare_strings(const char* first_str, const char* second_str, bool is_case_insensitive)
 {
   if (is_case_insensitive)
-    //return (strcasecmp(first_str, second_str) == 0);
+    return (strcasecmp(first_str, second_str) == 0);
     //----------------------------- REMOVE !--------------------------------------------
-      return (_stricmp(first_str, second_str) == 0);
+    // return (_stricmp(first_str, second_str) == 0);
     //----------------------------- REMOVE !--------------------------------------------
 
   return (strcmp(first_str, second_str) == 0);
@@ -197,30 +198,4 @@ bool compare_chars(const char first_char, const char second_char, bool is_case_i
 
   return (first_char == second_char);
 }
-
-int read_line(char** p_line, FILE* input_stream)
-{
-    Error_Code_t status = 0;
-
-    int max_line_len = 500;
-
-    char* buffer = (char*)malloc(max_line_len);
-
-    status = check_mem_alloc(buffer, __FILE__, __LINE__, __func__);
-    if (status != SUCCESS_CODE)
-        return -1;
-    // ssize_t readline_status = getline(&line, &line_size, input_stream);
-    //----------------------------- REMOVE !--------------------------------------------
-    if (fgets(buffer, max_line_len, input_stream) == NULL)
-        return -1;
-    //-------------------------------------------------------------------------
-
-    if (buffer[strlen(buffer) - 1] == '\n')
-        buffer[strlen(buffer) - 1] = '\0'; 
-
-    *p_line = buffer;
-
-    return 1;
-}
-
 

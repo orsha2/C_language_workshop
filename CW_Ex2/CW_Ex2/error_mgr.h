@@ -17,5 +17,5 @@ extern const char *MSG_ERR_MEM_ALLOC;
 
 
 void print_error(const char *msg, const char *file, int line, const char *func_name);
-
+Error_Code_t check_mem_alloc(void* ptr, const char* file, int line, const char* func_name);
 #endif
