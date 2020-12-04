@@ -6,7 +6,6 @@
 #include "error_mgr.h"
 #include "init_regex.h"
 #include "my_grep.h"
-#include "helpers.h"
 
 #define MIN_ARGS_NUM 2
 #define MAX_ARGS_NUM 12
@@ -45,11 +44,6 @@ int main(int argc, char* argv[])
 
     if (status != SUCCESS_CODE)
         goto main_exit;
-
-    //----------------------------- REMOVE !--------------------------------------------
-    //print_expression_and_flags(my_regex_and_flags, expression);
-    // print_regex(my_regex_and_flags);
-    //----------------------------- REMOVE !--------------------------------------------
 
     grep_execute_on_stream(input_stream, my_regex_and_flags);
 

@@ -27,10 +27,10 @@ int read_line(char** p_line, FILE* input_stream);
 void grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_flags)
 {
     Line_Descriptor line_desc = { NULL, 0, 0 };
-    char* line;
+    char* line = NULL;
     bool is_matching_line, to_print;
     bool is_first_matching_block = true;
-    ssize_t line_size = 0 ;  
+    size_t line_size = 0 ;
     int matching_line_counter = 0, lines_to_print = 0;
     ssize_t status = getline(&line, &line_size, input_stream);
     
