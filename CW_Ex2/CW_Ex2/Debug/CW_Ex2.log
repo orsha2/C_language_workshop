@@ -1,3 +1,15 @@
-﻿  my_grep.c
-E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\my_grep.c(212,29): warning C4013: 'check_mem_alloc' undefined; assuming extern returning int
+﻿  cmd_parser.c
+  helpers.c
+  init_regex.c
+  main.c
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\main.c(38,34): warning C4020: 'initialize_regex_array': too many actual parameters
+  my_grep.c
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\my_grep.c(48,30): warning C4047: 'function': 'char *' differs in levels of indirection from 'char *[500]'
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\my_grep.c(48,26): warning C4024: 'fgets': different types for formal and actual parameter 1
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\my_grep.c(53,48): warning C4047: 'function': 'char *' differs in levels of indirection from 'char *[500]'
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\my_grep.c(53,44): warning C4024: 'update_line_descriptor': different types for formal and actual parameter 2
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\my_grep.c(69,27): warning C4047: 'function': 'char *' differs in levels of indirection from 'char *[500]'
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\my_grep.c(69,23): warning C4024: 'fgets': different types for formal and actual parameter 1
+E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\CW_Ex2\my_grep.c(237,1): warning C4090: 'initializing': different 'const' qualifiers
+  Generating Code...
   CW_Ex2.vcxproj -> E:\My Stuff\01 - Education\myTAU\IV\Y IV A\C Language Workshop\C_Language_Workshop\CW_Ex2\Debug\CW_Ex2.exe

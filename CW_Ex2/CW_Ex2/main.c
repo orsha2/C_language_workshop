@@ -87,18 +87,17 @@ void free_main_resources(FILE* input_stream, Regex_And_Flags* my_regex_and_flags
 
         free_paretheses_block(&(regex_array->regex_block_contents.parentheses_block));
     }
+
     free(regex_array);
     free(my_regex_and_flags);
 }
 
 void free_paretheses_block(Parentheses* parentheses_block)
 {
+    char* parenthesis_contents = parentheses_block->left_side;
 
-    if (parentheses_block->left_side != NULL)
-        free(parentheses_block->left_side);
-
-    if (parentheses_block->right_side != NULL)
-        free(parentheses_block->right_side);
+    if (parenthesis_contents != NULL)
+        free(parenthesis_contents);
 }
 
 Error_Code_t assert_argc_value_range(int argc)
@@ -109,44 +108,3 @@ Error_Code_t assert_argc_value_range(int argc)
     print_error(MSG_ERR_NUM_ARGS, __FILE__, __LINE__, __func__);
     return ARGS_NUM_ERROR;
 }
-
-
-/*
--n -i  bla   in.txt
--------------------------------------
-bla
-
-BLFUEIWFJ !?432bla?!?432
-
-b b $$$blA$325 BLi
-BLDI
-
-
-
-
-bal Bla
-45 34534		bla
-    bla
- bla
-bla
-------------------------------
-0: bla
-6: BLFUEIWFJ !?432bla?!?432
-68: 45 34534            bla
-82:     bla
-87:  bla
-92: bla
-
-5:bla
-10:bla
-14:        bla
-
-nf
-
-bla
-
-bla
-        bla
-
-
-*/
