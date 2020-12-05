@@ -23,16 +23,16 @@ typedef enum _Flag {
 } Flag;
 
 typedef enum _Regex_Block_Type {
-  REGEX_TYPE_DOT,
-  REGEX_TYPE_REGULAR_CHAR,
-  REGEX_TYPE_PARENTHESES,
-  REGEX_TYPE_BRACKETS
+    REGEX_TYPE_DOT,
+    REGEX_TYPE_REGULAR_CHAR,
+    REGEX_TYPE_PARENTHESES,
+    REGEX_TYPE_BRACKETS
 } Regex_Block_Type;
 
 typedef struct _Parentheses {
     char* left_side;
     char* right_side;
-} Parentheses; 
+} Parentheses;
 
 typedef struct _Bracket {
     char bracket_start;

@@ -74,7 +74,8 @@ Flag load_flag_and_update_index(char** args, int* index, Regex_And_Flags* my_reg
 int get_flag_index(const char* current_flag)
 {
     Flag index;
-    for (index = FLAGS_START; index < FLAGS_END; index++) {
+    for (index = FLAGS_START; index < FLAGS_END; index++)
+    {
         if (strcmp(current_flag, FLAGS_STR_ARRAY[index]) == 0)
             return index;
     }
