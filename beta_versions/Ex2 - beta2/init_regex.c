@@ -133,7 +133,7 @@ Error_Code_t set_parentheses_block_return_status(char** p_parentheses_block_star
     strcpy_until_char(&parentheses_contents, p_parentheses_block_start, ')');
 
     set_parentheses_block_contents(&current_regex_block->regex_block_contents, left_side, right_side);
-
+   
     return SUCCESS_CODE;
 }
 

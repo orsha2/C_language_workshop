@@ -65,7 +65,7 @@ void grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_fl
        
     }
     handle_c_flag(my_regex_and_flags->flags[C_FLAG], matching_line_counter);
-
+  
   free(line);
 }
 
@@ -102,7 +102,7 @@ bool check_if_matching_line(Line_Descriptor* line_desc, Regex_And_Flags* my_rege
 
         is_matching = is_matching_expression_at_place(line + i, my_regex_and_flags->regex_array,
             my_regex_and_flags->regex_array_len, my_regex_and_flags->flags);
-
+        
         if (is_matching)
             break;
     }
@@ -163,7 +163,7 @@ bool check_if_parentheses_and_rest_of_line_match(char* line, Regex_Block* regex_
     if (check_if_line_starting_with_substring(line, left_side, flags[I_FLAG]))
         is_right_side_matching =  is_matching_expression_at_place(line + strlen(left_side), regex_blocks + 1,
                                                                   regex_block_num - 1, flags);
-
+   
     return is_left_side_matching || is_right_side_matching;  
 }
 
