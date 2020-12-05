@@ -34,8 +34,7 @@ int main(int argc, char* argv[])
     if (status != SUCCESS_CODE)
         goto main_exit;
 
-    status = initialize_regex_array(expression, &my_regex_and_flags->regex_array, &(my_regex_and_flags->regex_array_len),
-        my_regex_and_flags->flags[E_FLAG]);
+    status = initialize_regex_array(expression, &my_regex_and_flags->regex_array, &(my_regex_and_flags->regex_array_len));
 
     if (status != SUCCESS_CODE)
         goto main_exit;
@@ -45,8 +44,9 @@ int main(int argc, char* argv[])
     if (status != SUCCESS_CODE)
         goto main_exit;
 
+  
     grep_execute_on_stream(input_stream, my_regex_and_flags);
-
+    
 main_exit:
     free_main_resources(input_stream, my_regex_and_flags);
 
@@ -73,7 +73,7 @@ Error_Code_t initialize_input_stream(char* file_name, FILE** p_f_input)
 
 void free_main_resources(FILE* input_stream, Regex_And_Flags* my_regex_and_flags)
 {
-    if (input_stream != NULL)
+    if (input_stream != NULL && input_stream != stdin)
         fclose(input_stream);
 
     if (my_regex_and_flags == NULL)
@@ -81,11 +81,13 @@ void free_main_resources(FILE* input_stream, Regex_And_Flags* my_regex_and_flags
 
     Regex_Block* regex_array = my_regex_and_flags->regex_array;
     int i;
-    for (i = 0; i < my_regex_and_flags->regex_array_len; i++) {
-        if (regex_array->type != REGEX_TYPE_PARENTHESES)
+    
+    for (i = 0; i < my_regex_and_flags->regex_array_len; i++) 
+    {    
+        if ((regex_array + i )->type != REGEX_TYPE_PARENTHESES)
             continue;
-
-        free_paretheses_block(&(regex_array->regex_block_contents.parentheses_block));
+        
+        free_paretheses_block(&((regex_array + i )->regex_block_contents.parentheses_block));
     }
 
     free(regex_array);
@@ -95,7 +97,7 @@ void free_main_resources(FILE* input_stream, Regex_And_Flags* my_regex_and_flags
 void free_paretheses_block(Parentheses* parentheses_block)
 {
     char* parenthesis_contents = parentheses_block->left_side;
-
+    
     if (parenthesis_contents != NULL)
         free(parenthesis_contents);
 }

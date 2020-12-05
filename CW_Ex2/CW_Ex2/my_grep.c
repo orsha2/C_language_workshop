@@ -26,7 +26,7 @@ void print_lines_block_separator_if_new_block(bool is_matching, bool* flags, boo
 void handle_c_flag(bool c_flag, int matching_lines_amount);
 bool compare_chars(const char first_char, const char second_char, bool is_case_insensitive);
 bool check_if_line_starting_with_substring(const char* line, const char* substring, bool is_case_insensitive); 
-check_if_char_in_range(char current_char, Bracket bracket_block);
+bool check_if_char_in_range(char current_char, Bracket bracket_block);
 bool check_if_parentheses_and_rest_of_line_match(char* line, Regex_Block* regex_blocks, int regex_block_num, bool* flags);
 
 static const char* LINES_BLOCK_SEPARATOR = "--";
@@ -36,19 +36,16 @@ static const char NOT_MATCHING_LINE_SEPARATOR = '-';
 void grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_flags)
 {
     Line_Descriptor line_desc = { NULL, 0, 0 };
-    //char* line = NULL;
+    char* line = NULL;
     bool is_matching_line, to_print;
     bool is_first_matching_block = true;
     size_t line_size = 0 ;
     int matching_line_counter = 0, lines_to_print = 0; 
 
-   // ssize_t status = getline(&line, &line_size, input_stream);
-    //-------------------------------------
-    char* line[500];
-    char* status = fgets(line, 500, input_stream); 
-    //-------------------------------------
+    ssize_t status = getline(&line, &line_size, input_stream);
+    
 
-    while (status!=NULL)//(status >= 0)
+    while (status >= 0 ) 
     {
         update_line_descriptor(&line_desc, line);
 
@@ -64,14 +61,12 @@ void grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_fl
         if (is_matching_line)
             is_first_matching_block = false;
      
-       // status = getline(&line, &line_size, input_stream);
-       //-------------------------------------
-       status = fgets(line, 500, input_stream);
-       //-------------------------------------
+       status = getline(&line, &line_size, input_stream);
+       
     }
     handle_c_flag(my_regex_and_flags->flags[C_FLAG], matching_line_counter);
-
-  // free(line);
+  
+  free(line);
 }
 
 
@@ -107,7 +102,7 @@ bool check_if_matching_line(Line_Descriptor* line_desc, Regex_And_Flags* my_rege
 
         is_matching = is_matching_expression_at_place(line + i, my_regex_and_flags->regex_array,
             my_regex_and_flags->regex_array_len, my_regex_and_flags->flags);
-
+        
         if (is_matching)
             break;
     }
@@ -168,7 +163,7 @@ bool check_if_parentheses_and_rest_of_line_match(char* line, Regex_Block* regex_
     if (check_if_line_starting_with_substring(line, left_side, flags[I_FLAG]))
         is_right_side_matching =  is_matching_expression_at_place(line + strlen(left_side), regex_blocks + 1,
                                                                   regex_block_num - 1, flags);
-
+   
     return is_left_side_matching || is_right_side_matching;  
 }
 
@@ -233,9 +228,6 @@ void update_line_descriptor(Line_Descriptor* line_desc, char* line_buffer)
 
 bool check_if_line_starting_with_substring(const char* line, const char* substring, bool is_case_insensitive)
 {
-    char* first_occurrence = strstr(line, substring);
-    char* beginning_of_the_line = line;
-
     while(*line !='\0'  && *substring != '\0')
     {
         if(compare_chars(*line, *substring, is_case_insensitive) == false)
@@ -258,7 +250,7 @@ bool compare_chars(const char first_char, const char second_char, bool is_case_i
   return (first_char == second_char);
 }
 
-check_if_char_in_range(char current_char, Bracket bracket_block)
+bool check_if_char_in_range(char current_char, Bracket bracket_block)
 {
     return (current_char >= bracket_block.bracket_start && 
             current_char <= bracket_block.bracket_end);

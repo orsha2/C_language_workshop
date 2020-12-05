@@ -118,7 +118,7 @@ Error_Code_t set_parentheses_block_return_status(char** p_parentheses_block_star
 
     int size_of_block = get_bracket_block_end(*p_parentheses_block_start, FIRST_CHAR_IN_STR);
 
-    char* parentheses_contents = (char*)malloc((size_of_block+1) * sizeof(char));
+    char* parentheses_contents = (char*)malloc((size_of_block + 1) * sizeof(char));
 
     status = check_mem_alloc(parentheses_contents, __FILE__, __LINE__, __func__);
 
@@ -133,7 +133,7 @@ Error_Code_t set_parentheses_block_return_status(char** p_parentheses_block_star
     strcpy_until_char(&parentheses_contents, p_parentheses_block_start, ')');
 
     set_parentheses_block_contents(&current_regex_block->regex_block_contents, left_side, right_side);
-
+   
     return SUCCESS_CODE;
 }
 
