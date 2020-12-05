@@ -1,0 +1,11 @@
+tmp_output:my_grep
+tmp_output-frthdtyb
+tmp_output-bla
+--
+tmp_output:my_grep2
+--
+(standard input):my_grep
+(standard input)-frthdtyb
+(standard input)-bla
+--
+(standard input):my_grep2

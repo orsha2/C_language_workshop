@@ -32,8 +32,7 @@ int get_bracket_block_end(char* expression, int index);
 int count_amount_of_regex_blocks(char* expression);
 Char_Type classify_char_type(char my_char);
 
-Error_Code_t initialize_regex_array(char* expression, Regex_Block** p_regex_array, int* p_regex_array_len,
-    bool is_E_flag)
+Error_Code_t initialize_regex_array(char* expression, Regex_Block** p_regex_array, int* p_regex_array_len)
 {
     Error_Code_t status = SUCCESS_CODE;
     int index, regex_array_len;
@@ -119,7 +118,7 @@ Error_Code_t set_parentheses_block_return_status(char** p_parentheses_block_star
 
     int size_of_block = get_bracket_block_end(*p_parentheses_block_start, FIRST_CHAR_IN_STR);
 
-    char* parentheses_contents = (char*)malloc((size_of_block) * sizeof(char));
+    char* parentheses_contents = (char*)malloc((size_of_block + 1) * sizeof(char));
 
     status = check_mem_alloc(parentheses_contents, __FILE__, __LINE__, __func__);
 
