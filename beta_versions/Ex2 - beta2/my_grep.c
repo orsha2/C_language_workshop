@@ -21,17 +21,19 @@ bool is_matching_expression_at_place(char* line, Regex_Block* regex_blocks, int 
 bool check_x_flag_and_start_of_line(bool x_flag, int line_index);
 bool check_x_flag_and_end_of_line(bool x_flag, char current_char);
 bool check_if_print_and_update_lines_to_print(bool is_matching_line, int* p_lines_to_print, Regex_And_Flags* my_regex_and_flags); 
-void grep_printer(Line_Descriptor* line_desc, bool is_matching, bool* flags, bool is_first_matching_block); 
-void print_lines_block_separator_if_new_block(bool is_matching, bool* flags, bool is_first_matching_block); 
-void handle_c_flag(bool c_flag, int matching_lines_amount);
-bool compare_chars(const char first_char, const char second_char, bool is_case_insensitive);
 bool check_if_line_starting_with_substring(const char* line, const char* substring, bool is_case_insensitive); 
 bool check_if_char_in_range(char current_char, Bracket bracket_block);
 bool check_if_parentheses_and_rest_of_line_match(char* line, Regex_Block* regex_blocks, int regex_block_num, bool* flags);
+bool compare_chars(const char first_char, const char second_char, bool is_case_insensitive);
+void grep_printer(Line_Descriptor* line_desc, bool is_matching, bool* flags, bool is_first_matching_block);
+void print_lines_block_separator_if_new_block(bool is_matching, bool* flags, bool is_first_matching_block);
+void handle_c_flag(bool c_flag, int matching_lines_amount);
+
 
 static const char* LINES_BLOCK_SEPARATOR = "--";
 static const char MATCHING_LINE_SEPARATOR = ':';
 static const char NOT_MATCHING_LINE_SEPARATOR = '-';
+
 
 void grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_flags)
 {
@@ -39,13 +41,12 @@ void grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_fl
     char* line = NULL;
     bool is_matching_line, to_print;
     bool is_first_matching_block = true;
-    size_t line_size = 0 ;
-    int matching_line_counter = 0, lines_to_print = 0; 
+    size_t line_size = 0;
+    int matching_line_counter = 0, lines_to_print = 0;
 
     ssize_t status = getline(&line, &line_size, input_stream);
-    
 
-    while (status >= 0 ) 
+    while (status >= 0)
     {
         update_line_descriptor(&line_desc, line);
 
@@ -57,25 +58,23 @@ void grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_fl
 
         if (to_print)
             grep_printer(&line_desc, is_matching_line, my_regex_and_flags->flags, is_first_matching_block);
-        
+
         if (is_matching_line)
             is_first_matching_block = false;
-     
-       status = getline(&line, &line_size, input_stream);
-       
-    }
-    handle_c_flag(my_regex_and_flags->flags[C_FLAG], matching_line_counter);
-  
-  free(line);
-}
 
+        status = getline(&line, &line_size, input_stream);
+    }
+
+    handle_c_flag(my_regex_and_flags->flags[C_FLAG], matching_line_counter);
+    free(line);
+}
 
 bool check_if_print_and_update_lines_to_print(bool is_matching_line, int* p_lines_to_print, Regex_And_Flags* my_regex_and_flags)
 {
     if (my_regex_and_flags->flags[A_FLAG] == false)
         return is_matching_line;
-
-    if (is_matching_line)
+    
+    else if (is_matching_line)
     {
         *p_lines_to_print = my_regex_and_flags->A_flag_value;
         return true;
@@ -87,7 +86,6 @@ bool check_if_print_and_update_lines_to_print(bool is_matching_line, int* p_line
     }
     else return false;
 }
-
 
 bool check_if_matching_line(Line_Descriptor* line_desc, Regex_And_Flags* my_regex_and_flags)
 {

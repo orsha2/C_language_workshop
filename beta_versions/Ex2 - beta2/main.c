@@ -12,7 +12,7 @@
 
 Error_Code_t initialize_input_stream(char* file_name, FILE** p_f_input);
 void free_main_resources(FILE* input_stream, Regex_And_Flags* pattern_and_flags);
-Error_Code_t assert_argc_value_range(int argc);
+Error_Code_t check_argc_value_range(int argc);
 void free_paretheses_block(Parentheses* parentheses_block);
 
 int main(int argc, char* argv[])
@@ -20,15 +20,15 @@ int main(int argc, char* argv[])
     Error_Code_t status;
 
     FILE* input_stream = NULL;
-    char* file_name = NULL;
+    char* file_name = NULL;     
     char* expression;
     Regex_And_Flags* my_regex_and_flags = NULL;
 
-    status = assert_argc_value_range(argc);
+    status = check_argc_value_range(argc);
     
     if (status != SUCCESS_CODE)
         goto main_exit;
-
+    
     status = parse_cmd_args(argc, argv, &my_regex_and_flags, &expression, &file_name);
 
     if (status != SUCCESS_CODE)
@@ -44,7 +44,6 @@ int main(int argc, char* argv[])
     if (status != SUCCESS_CODE)
         goto main_exit;
 
-  
     grep_execute_on_stream(input_stream, my_regex_and_flags);
     
 main_exit:
@@ -71,6 +70,15 @@ Error_Code_t initialize_input_stream(char* file_name, FILE** p_f_input)
     return SUCCESS_CODE;
 }
 
+Error_Code_t check_argc_value_range(int argc)
+{
+    if (argc >= MIN_ARGS_NUM && argc <= MAX_ARGS_NUM)
+        return SUCCESS_CODE;
+
+    print_error(MSG_ERR_NUM_ARGS, __FILE__, __LINE__, __func__);
+    return ARGS_NUM_ERROR;
+}
+
 void free_main_resources(FILE* input_stream, Regex_And_Flags* my_regex_and_flags)
 {
     if (input_stream != NULL && input_stream != stdin)
@@ -81,13 +89,13 @@ void free_main_resources(FILE* input_stream, Regex_And_Flags* my_regex_and_flags
 
     Regex_Block* regex_array = my_regex_and_flags->regex_array;
     int i;
-    
-    for (i = 0; i < my_regex_and_flags->regex_array_len; i++) 
-    {    
-        if ((regex_array + i )->type != REGEX_TYPE_PARENTHESES)
+
+    for (i = 0; i < my_regex_and_flags->regex_array_len; i++)
+    {
+        if (regex_array[i].type != REGEX_TYPE_PARENTHESES)
             continue;
-        
-        free_paretheses_block(&((regex_array + i )->regex_block_contents.parentheses_block));
+
+        free_paretheses_block(&(regex_array[i].regex_block_contents.parentheses_block));
     }
 
     free(regex_array);
@@ -102,11 +110,3 @@ void free_paretheses_block(Parentheses* parentheses_block)
         free(parenthesis_contents);
 }
 
-Error_Code_t assert_argc_value_range(int argc)
-{
-    if (argc >= MIN_ARGS_NUM && argc <= MAX_ARGS_NUM)
-        return SUCCESS_CODE;
-
-    print_error(MSG_ERR_NUM_ARGS, __FILE__, __LINE__, __func__);
-    return ARGS_NUM_ERROR;
-}
