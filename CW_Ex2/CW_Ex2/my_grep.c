@@ -8,6 +8,7 @@
 #include "my_grep.h"
 #include "error_mgr.h"
 
+
 typedef struct _Line_Descriptor {
     char* line;
     int line_counter;
@@ -52,15 +53,16 @@ void grep_execute_on_stream(FILE* input_stream, Regex_And_Flags* my_regex_and_fl
 
         is_matching_line = check_if_matching_line(&line_desc, my_regex_and_flags);
 
-        matching_line_counter += is_matching_line ? 1 : 0;
-
         to_print = check_if_print_and_update_lines_to_print(is_matching_line, &lines_to_print, my_regex_and_flags);
 
         if (to_print)
             grep_printer(&line_desc, is_matching_line, my_regex_and_flags->flags, is_first_matching_block);
 
         if (is_matching_line)
+        {
             is_first_matching_block = false;
+            matching_line_counter++; 
+        }
 
         status = getline(&line, &line_size, input_stream);
     }
@@ -180,8 +182,11 @@ void grep_printer(Line_Descriptor* line_desc, bool is_matching, bool* flags, boo
     if (flags[C_FLAG])
         return;
 
-    char separator = is_matching ? MATCHING_LINE_SEPARATOR : 
-                                   NOT_MATCHING_LINE_SEPARATOR;
+    char separator;
+    if (is_matching)
+         separator = MATCHING_LINE_SEPARATOR;
+    else 
+        separator = NOT_MATCHING_LINE_SEPARATOR;
 
     print_lines_block_separator_if_new_block(is_matching, flags, is_first_matching_block);
 

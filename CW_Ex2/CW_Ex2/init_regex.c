@@ -21,14 +21,13 @@ typedef enum _Char_Type {
 const char* FLAGS_STR_ARRAY[] = {"-i", "-v", "-c", "-n", "-x", "-b", "-E", "-A"};
 
 Error_Code_t init_regex_block_and_advance_expression(Regex_Block* current_regex_block, char** p_rest_of_expression);
-int get_bracket_block_end(char* expression, int index);
 Error_Code_t set_parentheses_block_and_return_status(char** p_parentheses_block_start, Regex_Block* current_regex_block);
-void set_parentheses_block_contents(Regex_Block_Contents* regex_block_contents, char* left_side, char* right_side);
+void  set_parentheses_block_contents(Regex_Block_Contents* regex_block_contents, char* left_side, char* right_side);
 char* set_bracket_block(char* bracket_block_start, Regex_Block* current_regex_block);
-void set_regular_char_block(char regular_char, Regex_Block* current_regex_block);
+void  set_regular_char_block(char regular_char, Regex_Block* current_regex_block);
+int get_bracket_block_end(char* expression, int index);
 
 void strcpy_until_char(char** p_dest, char** p_source, char end_char);
-int get_bracket_block_end(char* expression, int index);
 int count_amount_of_regex_blocks(char* expression);
 Char_Type classify_char_type(char my_char);
 

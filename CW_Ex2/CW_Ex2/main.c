@@ -11,9 +11,10 @@
 #define MAX_ARGS_NUM 12
 
 Error_Code_t initialize_input_stream(char* file_name, FILE** p_f_input);
-void free_main_resources(FILE* input_stream, Regex_And_Flags* pattern_and_flags);
 Error_Code_t check_argc_value_range(int argc);
+void free_main_resources(FILE* input_stream, Regex_And_Flags* pattern_and_flags);
 void free_paretheses_block(Parentheses* parentheses_block);
+
 
 int main(int argc, char* argv[])
 {

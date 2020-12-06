@@ -1,25 +1,25 @@
 #ifndef REGEX_HANDLER_H
 #define REGEX_HANDLER_H
 
-#include "error_mgr.h"
 #include <stdbool.h>
+#include "error_mgr.h"
 
 #define FLAGS_NUM 8
 
 extern const char *FLAGS_STR_ARRAY[];
 
 typedef enum _Flag {
-  FLAGS_START = 0,
-  I_FLAG = FLAGS_START,
-  V_FLAG,
-  C_FLAG,
-  N_FLAG,
-  X_FLAG,
-  B_FLAG,
-  E_FLAG,
-  A_FLAG,
-  FLAGS_END,
-  NOT_A_FLAG
+    FLAGS_START = 0,
+    I_FLAG = FLAGS_START,
+    V_FLAG,
+    C_FLAG,
+    N_FLAG,
+    X_FLAG,
+    B_FLAG,
+    E_FLAG,
+    A_FLAG,
+    FLAGS_END,
+    NOT_A_FLAG
 } Flag;
 
 typedef enum _Regex_Block_Type {
@@ -30,16 +30,21 @@ typedef enum _Regex_Block_Type {
 } Regex_Block_Type;
 
 typedef struct _Parentheses {
+
     char* left_side;
     char* right_side;
+
 } Parentheses;
 
 typedef struct _Bracket {
+
     char bracket_start;
     char bracket_end;
+
 } Bracket; 
 
 typedef union _Regex_Block_Contents {
+
     char regular_char;
     Parentheses parentheses_block;
     Bracket bracket_block;
@@ -47,6 +52,7 @@ typedef union _Regex_Block_Contents {
 } Regex_Block_Contents; 
 
 typedef struct _Regex_Block {
+
     Regex_Block_Type type;
     Regex_Block_Contents regex_block_contents;
 
