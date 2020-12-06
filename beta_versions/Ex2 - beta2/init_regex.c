@@ -22,7 +22,7 @@ const char* FLAGS_STR_ARRAY[] = {"-i", "-v", "-c", "-n", "-x", "-b", "-E", "-A"}
 
 Error_Code_t init_regex_block_and_advance_expression(Regex_Block* current_regex_block, char** p_rest_of_expression);
 int get_bracket_block_end(char* expression, int index);
-Error_Code_t set_parentheses_block_return_status(char** p_parentheses_block_start, Regex_Block* current_regex_block);
+Error_Code_t set_parentheses_block_and_return_status(char** p_parentheses_block_start, Regex_Block* current_regex_block);
 void set_parentheses_block_contents(Regex_Block_Contents* regex_block_contents, char* left_side, char* right_side);
 char* set_bracket_block(char* bracket_block_start, Regex_Block* current_regex_block);
 void set_regular_char_block(char regular_char, Regex_Block* current_regex_block);
@@ -85,7 +85,7 @@ Error_Code_t init_regex_block_and_advance_expression(Regex_Block* current_regex_
 
     case CHAR_PARENTHESES_START:
         rest_of_expression++;
-        status = set_parentheses_block_return_status(&rest_of_expression, current_regex_block);
+        status = set_parentheses_block_and_return_status(&rest_of_expression, current_regex_block);
         break;
 
     case CHAR_BRACKETS_START:
@@ -109,7 +109,7 @@ void set_regular_char_block(char regular_char, Regex_Block* current_regex_block)
     current_regex_block->regex_block_contents.regular_char = regular_char;
 }
 
-Error_Code_t set_parentheses_block_return_status(char** p_parentheses_block_start, Regex_Block* current_regex_block)
+Error_Code_t set_parentheses_block_and_return_status(char** p_parentheses_block_start, Regex_Block* current_regex_block)
 {
     Error_Code_t status;
     char* left_side;
@@ -176,57 +176,56 @@ char* set_bracket_block(char* bracket_block_start, Regex_Block* current_regex_bl
 
 int count_amount_of_regex_blocks(char* expression)
 {
-  int block_counter = 0;
-  size_t current_char_index = 0;
-  char current_char;
-  Char_Type current_char_type;
+    int block_counter = 0;
+    size_t current_char_index = 0;
+    char current_char;
+    Char_Type current_char_type;
 
-  while (current_char_index < strlen(expression)) {
-    current_char = expression[current_char_index];
-    current_char_type = classify_char_type(current_char);
+    while (current_char_index < strlen(expression)) {
+        current_char = expression[current_char_index];
+        current_char_type = classify_char_type(current_char);
 
-    switch (current_char_type) {
-      case CHAR_BACK_SLASH:
-        block_counter++;
+        switch (current_char_type) {
+        case CHAR_BACK_SLASH:
+            block_counter++;
+            current_char_index++;
+            break;
+
+        case CHAR_REGULAR:
+        case CHAR_DOT:
+            block_counter++;
+            break;
+
+        case CHAR_PARENTHESES_START:
+        case CHAR_BRACKETS_START:
+            block_counter++;
+            current_char_index = get_bracket_block_end(expression, current_char_index);
+            break;
+
+        case CHAR_PARENTHESES_END:
+        case CHAR_BRACKETS_END:
+        case CHAR_APOSTROPHE:
+            break;
+        }
         current_char_index++;
-        break;
-
-      case CHAR_REGULAR:
-      case CHAR_DOT:
-        block_counter++;
-        break;
-
-      case CHAR_PARENTHESES_START:
-      case CHAR_BRACKETS_START:
-        block_counter++;
-        current_char_index = get_bracket_block_end(expression, current_char_index);
-        break;
-
-      case CHAR_PARENTHESES_END:
-      case CHAR_BRACKETS_END:
-      case CHAR_APOSTROPHE:
-        break;
     }
-    current_char_index++;
-  }
-
-  return block_counter;
+    return block_counter;
 }
 
 int get_bracket_block_end(char* expression, int index)
 {
-  char current_char;
-  Char_Type current_char_type;
-  do {
+    char current_char;
+    Char_Type current_char_type;
+    do {
 
-    current_char = expression[index];
-    current_char_type = classify_char_type(current_char);
-    index++;
+        current_char = expression[index];
+        current_char_type = classify_char_type(current_char);
+        index++;
 
-  } while (current_char != '\0' && current_char_type != CHAR_PARENTHESES_END && current_char_type != CHAR_BRACKETS_END);
+    } while (current_char != '\0' && current_char_type != CHAR_PARENTHESES_END && current_char_type != CHAR_BRACKETS_END);
 
-  index--;
-  return index;
+    index--;
+    return index;
 }
 
 Char_Type classify_char_type(char my_char)

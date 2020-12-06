@@ -14,6 +14,8 @@ public class Main
                 ComplexNumber z2 = new ComplexNumber(3, 4);
 
                 ComplexNumber plusResult = z1.plus(z2);
+
+
                 assert plusResult.almostEquals(new ComplexNumber(4, 6));
                 assert almostEquals(plusResult.getImaginaryPart(), 6);
 
@@ -27,6 +29,6 @@ public class Main
                 assert almostEquals(z1.divide(z2).getArgument(), z1.getArgument() - z2.getArgument());
 
 
-                System.out.println(z1.divide(z2).getArgument());
+          
         }
 }
