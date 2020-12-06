@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "error_mgr.h" 
 
-const char *MSG_ERR_NUM_ARGS = "wrong amount of arguments (expected 2)";
+const char *MSG_ERR_NUM_ARGS = "wrong amount of arguments";
 const char *MSG_ERR_CANNOT_OPEN_FILE = "couldn't open file";
 const char *MSG_ERR_MEM_ALLOC = "memory allocation error";
 

@@ -19,4 +19,11 @@ sh tests/test14.sh
 sh tests/test15.sh
 sh tests/test16.sh
 sh tests/test17.sh
+sh tests/test18.sh
+sh tests/test19.sh
+sh tests/test20.sh
+sh tests/test21.sh
+sh tests/test22.sh
+sh tests/test23.sh
+sh tests/test24.sh
 rm -rf tmp_output
