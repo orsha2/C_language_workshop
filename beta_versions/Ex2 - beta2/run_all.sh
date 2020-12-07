@@ -26,4 +26,7 @@ sh tests/test21.sh
 sh tests/test22.sh
 sh tests/test23.sh
 sh tests/test24.sh
+sh tests/test25.sh
+sh tests/test26.sh
+sh tests/test27.sh
 rm -rf tmp_output
