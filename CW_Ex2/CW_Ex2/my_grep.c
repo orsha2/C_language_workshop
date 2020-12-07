@@ -16,7 +16,6 @@ typedef struct _Line_Descriptor {
 } Line_Descriptor;
 
 
-void update_line_descriptor(Line_Descriptor* line_desc, char* line_buffer);
 bool check_if_matching_line(Line_Descriptor* line_desc, Regex_And_Flags* my_regex_and_flags);
 bool is_matching_expression_at_place(char* line, Regex_Block* regex_blocks, int regex_block_num, bool* flags);
 bool check_x_flag_and_start_of_line(bool x_flag, int line_index);
@@ -29,6 +28,7 @@ bool compare_chars(const char first_char, const char second_char, bool is_case_i
 void grep_printer(Line_Descriptor* line_desc, bool is_matching, bool* flags, bool is_first_matching_block);
 void print_lines_block_separator_if_new_block(bool is_matching, bool* flags, bool is_first_matching_block);
 void handle_c_flag(bool c_flag, int matching_lines_amount);
+void update_line_descriptor(Line_Descriptor* line_desc, char* line_buffer);
 
 
 static const char* LINES_BLOCK_SEPARATOR = "--";
@@ -177,58 +177,6 @@ bool check_x_flag_and_end_of_line(bool x_flag, char current_char)
     return (x_flag && (current_char != '\0' && current_char != '\n'));
 }
 
-void grep_printer(Line_Descriptor* line_desc, bool is_matching, bool* flags, bool is_first_matching_block)
-{
-    if (flags[C_FLAG])
-        return;
-
-    char separator;
-    if (is_matching)
-         separator = MATCHING_LINE_SEPARATOR;
-    else 
-        separator = NOT_MATCHING_LINE_SEPARATOR;
-
-    print_lines_block_separator_if_new_block(is_matching, flags, is_first_matching_block);
-
-    if (flags[B_FLAG])
-        printf("%ld%c%s", line_desc->byte_counter - strlen(line_desc->line), separator, line_desc->line);
-
-    else if (flags[N_FLAG])
-        printf("%d%c%s", line_desc->line_counter, separator, line_desc->line);
-
-    else 
-        printf("%s", line_desc->line);
-}
-
-void print_lines_block_separator_if_new_block(bool is_matching, bool* flags, bool is_first_matching_block)
-{
-
-    if (is_matching)
-    {
-        if (flags[A_FLAG] && flags[N_FLAG] == false && flags[B_FLAG] == false && (is_first_matching_block == false))
-            printf("%s\n", LINES_BLOCK_SEPARATOR);
-    }
-}
-
-void handle_c_flag(bool c_flag, int matching_lines_amount) 
-{
-    if (c_flag)
-        printf("%d\n", matching_lines_amount);
-}
-
-void update_line_descriptor(Line_Descriptor* line_desc, char* line_buffer)
-{
-    int line_counter = 0;
-    int bytes_counter = 0;
-
-    line_counter = line_desc->line_counter + 1;
-    bytes_counter = line_desc->byte_counter + strlen(line_buffer);
-
-    line_desc->line = line_buffer;
-    line_desc->line_counter = line_counter;
-    line_desc->byte_counter = bytes_counter;
-}
-
 bool check_if_line_starting_with_substring(const char* line, const char* substring, bool is_case_insensitive)
 {
     while(*line !='\0'  && *substring != '\0')
@@ -257,4 +205,54 @@ bool check_if_char_in_range(char current_char, Bracket bracket_block)
 {
     return (current_char >= bracket_block.bracket_start && 
             current_char <= bracket_block.bracket_end);
+}
+
+void grep_printer(Line_Descriptor* line_desc, bool is_matching, bool* flags, bool is_first_matching_block)
+{
+    if (flags[C_FLAG])
+        return;
+
+    char separator = MATCHING_LINE_SEPARATOR;
+
+    if (is_matching == false)
+        separator = NOT_MATCHING_LINE_SEPARATOR;
+
+    print_lines_block_separator_if_new_block(is_matching, flags, is_first_matching_block);
+
+    if (flags[B_FLAG])
+        printf("%ld%c%s", line_desc->byte_counter - strlen(line_desc->line), separator, line_desc->line);
+
+    else if (flags[N_FLAG])
+        printf("%d%c%s", line_desc->line_counter, separator, line_desc->line);
+
+    else
+        printf("%s", line_desc->line);
+}
+
+void print_lines_block_separator_if_new_block(bool is_matching, bool* flags, bool is_first_matching_block)
+{
+    if (is_matching)
+    {
+        if (flags[A_FLAG] && flags[N_FLAG] == false && flags[B_FLAG] == false && (is_first_matching_block == false))
+            printf("%s\n", LINES_BLOCK_SEPARATOR);
+    }
+}
+
+void handle_c_flag(bool c_flag, int matching_lines_amount)
+{
+    if (c_flag)
+        printf("%d\n", matching_lines_amount);
+}
+
+void update_line_descriptor(Line_Descriptor* line_desc, char* line_buffer)
+{
+    int line_counter = 0;
+    int bytes_counter = 0;
+
+    line_counter = line_desc->line_counter + 1;
+    bytes_counter = line_desc->byte_counter + strlen(line_buffer);
+
+    line_desc->line = line_buffer;
+    line_desc->line_counter = line_counter;
+    line_desc->byte_counter = bytes_counter;
 }

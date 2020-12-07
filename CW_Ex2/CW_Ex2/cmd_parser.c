@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void initialze_flags(bool flags_array[]);
+void initialize_flags(bool flags_array[]);
 Flag load_flag_and_update_index(char** args, int* index, Regex_And_Flags* my_regex_and_flags);
 int get_flag_index(const char* current_flag);
 
@@ -16,17 +16,18 @@ Error_Code_t parse_cmd_args(int arg_num, char** args, Regex_And_Flags** p_regex_
     Flag current_flag;
     Regex_And_Flags* regex_and_flags;
 
-    regex_and_flags = (Regex_And_Flags*)malloc(sizeof(Regex_And_Flags));
+    regex_and_flags = (Regex_And_Flags*)calloc(1, sizeof(Regex_And_Flags));
 
     status = check_mem_alloc(regex_and_flags, __FILE__, __LINE__, __func__);
 
     if (status != SUCCESS_CODE)
         return status; 
         
-    initialze_flags(regex_and_flags->flags);
+    initialize_flags(regex_and_flags->flags);
 
     arg_index = 1;
-    while (arg_index < arg_num) {
+    while (arg_index < arg_num) 
+    {
         current_flag = load_flag_and_update_index(args, &arg_index, regex_and_flags);
 
         if (current_flag == NOT_A_FLAG)
@@ -45,7 +46,7 @@ Error_Code_t parse_cmd_args(int arg_num, char** args, Regex_And_Flags** p_regex_
     return SUCCESS_CODE;
 }
 
-void initialze_flags(bool flags_array[])
+void initialize_flags(bool flags_array[])
 {
     Flag current_flag;
 
@@ -62,7 +63,8 @@ Flag load_flag_and_update_index(char** args, int* index, Regex_And_Flags* my_reg
 
     my_regex_and_flags->flags[current_flag] = true;
 
-    if (current_flag == A_FLAG) {
+    if (current_flag == A_FLAG)
+    {
         my_regex_and_flags->A_flag_value = atoi(args[*index + 1]);
         (*index)++;
     }

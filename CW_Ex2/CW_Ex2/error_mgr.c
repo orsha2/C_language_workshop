@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include "error_mgr.h" 
 
-const char *MSG_ERR_NUM_ARGS = "wrong amount of arguments";
-const char *MSG_ERR_CANNOT_OPEN_FILE = "couldn't open file";
-const char *MSG_ERR_MEM_ALLOC = "memory allocation error";
+const char *MSG_ERR_NUM_ARGS = "Wrong amount of arguments";
+const char *MSG_ERR_CANNOT_OPEN_FILE = "Couldn't open file";
+const char *MSG_ERR_MEM_ALLOC = "Memory allocation error";
 
 void print_error(const char *msg, const char *file, int line, const char *func_name)
 {

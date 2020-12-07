@@ -99,8 +99,11 @@ void free_main_resources(FILE* input_stream, Regex_And_Flags* my_regex_and_flags
         free_paretheses_block(&(regex_array[i].regex_block_contents.parentheses_block));
     }
 
-    free(regex_array);
-    free(my_regex_and_flags);
+    if (regex_array != NULL)
+        free(regex_array);
+
+    if (my_regex_and_flags != NULL)
+        free(my_regex_and_flags);
 }
 
 void free_paretheses_block(Parentheses* parentheses_block)
