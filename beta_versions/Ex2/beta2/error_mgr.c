@@ -1,3 +1,4 @@
+
 #include "error_mgr.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +11,7 @@ const char *MSG_ERR_CANNOT_OPEN_FILE = "Couldn't open file";
 const char *MSG_ERR_MEM_ALLOC = "Memory allocation error";
 
 void print_error(const char *msg, const char *file, int line, const char *func_name);
+
 
 void print_error(const char *msg, const char *file, int line, const char *func_name)
 {

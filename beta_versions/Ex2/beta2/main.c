@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 
 #include "cmd_parser.h"
 #include "error_mgr.h"
@@ -53,9 +52,9 @@ Error_Code_t initialize_input_stream(char *file_name, FILE **p_input_stream)
   Error_Code_t status = SUCCESS_CODE;
   if (file_name == NULL) {
     *p_input_stream = stdin;
-  } else {
+  } 
+  else {
     *p_input_stream = fopen(file_name, "r");
-
     status = check_file_opening(*p_input_stream, __FILE__, __LINE__, __func__);
   }
 
@@ -67,9 +66,11 @@ void free_main_resources(FILE *input_stream, Regex_And_Flags *my_regex_and_flags
   if (input_stream != NULL && input_stream != stdin) {
     fclose(input_stream);
   }
+
   if (my_regex_and_flags == NULL) {
     return;
   }
+
   Regex_Block *regex_array = my_regex_and_flags->regex_array;
   int i;
 
@@ -83,6 +84,7 @@ void free_main_resources(FILE *input_stream, Regex_And_Flags *my_regex_and_flags
   if (regex_array != NULL) {
     free(regex_array);
   }
+
   if (my_regex_and_flags != NULL) {
     free(my_regex_and_flags);
   }
@@ -90,9 +92,9 @@ void free_main_resources(FILE *input_stream, Regex_And_Flags *my_regex_and_flags
 
 void free_parentheses_block(Parentheses *parentheses_block)
 {
-  char *parenthesis_contents = parentheses_block->left_side;
+  char * parentheses_contents = parentheses_block->left_side;
 
-  if (parenthesis_contents != NULL) {
-    free(parenthesis_contents);
+  if (parentheses_contents != NULL) {
+    free(parentheses_contents);
   }
 }

@@ -1,11 +1,9 @@
-﻿#include <stdio.h>
+﻿
+#include <stdio.h>
 #include "init_regex.h"
 #include "error_mgr.h"
 #include <stdlib.h>
 #include <string.h>
-
-#define FIRST_CHAR_IN_STR 0
-#define SECOND_CHAR_IN_STR 1
 
 typedef enum _Char_Type {
   CHAR_REGULAR,
@@ -15,10 +13,12 @@ typedef enum _Char_Type {
   CHAR_BRACKETS_START,
   CHAR_BRACKETS_END,
   CHAR_BACK_SLASH,
-  CHAR_APOSTROPHE
 } Char_Type;
 
 const char *FLAGS_STR_ARRAY[] = {"-i", "-v", "-c", "-n", "-x", "-b", "-E", "-A"};
+
+static const int FIRST_CHAR_IN_STR_INDEX = 0;
+static const int SECOND_CHAR_IN_STR_INDEX = 1;
 
 Error_Code_t init_regex_block_and_advance_expression(Regex_Block *current_regex_block, char **p_rest_of_expression);
 Error_Code_t set_parentheses_block_and_return_status(char **p_parentheses_block_start,
@@ -31,6 +31,7 @@ int get_bracket_block_end(const char *expression, int index);
 void strcpy_until_char(char **p_dest, char **p_source, char end_char);
 int count_amount_of_regex_blocks(char *expression);
 Char_Type classify_char_type(char my_char);
+
 
 Error_Code_t initialize_regex_array(char *expression, Regex_Block **p_regex_array, int *p_regex_array_len)
 {
@@ -76,11 +77,11 @@ Error_Code_t init_regex_block_and_advance_expression(Regex_Block *current_regex_
       break;
 
     case CHAR_REGULAR:
-      set_regular_char_block(rest_of_expression[FIRST_CHAR_IN_STR], current_regex_block);
+      set_regular_char_block(rest_of_expression[FIRST_CHAR_IN_STR_INDEX], current_regex_block);
       break;
 
     case CHAR_BACK_SLASH:
-      set_regular_char_block(rest_of_expression[SECOND_CHAR_IN_STR], current_regex_block);
+      set_regular_char_block(rest_of_expression[SECOND_CHAR_IN_STR_INDEX], current_regex_block);
       rest_of_expression++;
       break;
 
@@ -95,7 +96,6 @@ Error_Code_t init_regex_block_and_advance_expression(Regex_Block *current_regex_
 
     case CHAR_PARENTHESES_END:
     case CHAR_BRACKETS_END:
-    case CHAR_APOSTROPHE:
       break;
   }
   rest_of_expression++;
@@ -117,7 +117,7 @@ Error_Code_t set_parentheses_block_and_return_status(char **p_parentheses_block_
   char *right_side;
   current_regex_block->type = REGEX_TYPE_PARENTHESES;
 
-  int size_of_block = get_bracket_block_end(*p_parentheses_block_start, FIRST_CHAR_IN_STR);
+  int size_of_block = get_bracket_block_end(*p_parentheses_block_start, FIRST_CHAR_IN_STR_INDEX);
 
   char *parentheses_contents = (char *)malloc((size_of_block + 1) * sizeof(char));
 
@@ -126,6 +126,7 @@ Error_Code_t set_parentheses_block_and_return_status(char **p_parentheses_block_
   if (status != SUCCESS_CODE) {
     return status;
   }
+
   left_side = parentheses_contents;
   strcpy_until_char(&parentheses_contents, p_parentheses_block_start, '|');
 
@@ -164,10 +165,10 @@ void set_parentheses_block_contents(Regex_Block_Contents *regex_block_contents, 
 
 char *set_bracket_block(char *bracket_block_start, Regex_Block *current_regex_block)
 {
-  int bracket_end_index = get_bracket_block_end(bracket_block_start, FIRST_CHAR_IN_STR);
+  int bracket_end_index = get_bracket_block_end(bracket_block_start, FIRST_CHAR_IN_STR_INDEX);
 
   current_regex_block->type = REGEX_TYPE_BRACKETS;
-  current_regex_block->regex_block_contents.bracket_block.bracket_start = bracket_block_start[SECOND_CHAR_IN_STR];
+  current_regex_block->regex_block_contents.bracket_block.bracket_start = bracket_block_start[SECOND_CHAR_IN_STR_INDEX];
 
   current_regex_block->regex_block_contents.bracket_block.bracket_end = bracket_block_start[bracket_end_index - 1];
 
@@ -206,7 +207,6 @@ int count_amount_of_regex_blocks(char *expression)
 
       case CHAR_PARENTHESES_END:
       case CHAR_BRACKETS_END:
-      case CHAR_APOSTROPHE:
         break;
     }
     current_char_index++;
@@ -217,9 +217,9 @@ int count_amount_of_regex_blocks(char *expression)
 int get_bracket_block_end(const char *expression, int index)
 {
   char current_char;
-  Char_Type current_char_type;
-  do {
+  Char_Type current_char_type; 
 
+  do {
     current_char = expression[index];
     current_char_type = classify_char_type(current_char);
     index++;
@@ -250,10 +250,6 @@ Char_Type classify_char_type(char my_char)
 
     case '.':
       return CHAR_DOT;
-
-    case '\'':
-      return CHAR_APOSTROPHE;
   }
-
   return CHAR_REGULAR;
 }

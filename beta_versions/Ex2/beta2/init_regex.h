@@ -1,5 +1,5 @@
-#ifndef REGEX_HANDLER_H
-#define REGEX_HANDLER_H
+#ifndef INIT_REGEX_H
+#define INIT_REGEX_H
 
 #include "error_mgr.h"
 #include <stdbool.h>
