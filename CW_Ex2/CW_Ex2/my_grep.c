@@ -18,15 +18,15 @@ bool check_if_matching_line(Line_Descriptor *line_desc, Regex_And_Flags *my_rege
 bool is_matching_expression_at_place(char *line, Regex_Block *regex_blocks, int regex_block_num, bool *flags);
 bool check_x_flag_and_start_of_line(bool x_flag, int line_index);
 bool check_x_flag_and_end_of_line(bool x_flag, char current_char);
-bool check_if_print_and_update_lines_to_print(bool is_matching_line, int *p_lines_to_print,
+bool check_if_print_and_update_lines_to_print(bool is_matching_line, bool *p_print_separator, int *p_lines_to_print,
                                               Regex_And_Flags *my_regex_and_flags);
 bool check_if_line_starting_with_substring(const char *line, const char *substring, bool is_case_insensitive);
 bool check_if_char_in_range(char current_char, Bracket bracket_block, bool is_case_insensitive);
 bool check_if_parentheses_and_rest_of_line_match(char *line, Regex_Block *regex_blocks, int regex_block_num,
                                                  bool *flags);
 bool compare_chars(const char first_char, const char second_char, bool is_case_insensitive);
-void grep_printer(Line_Descriptor *line_desc, bool is_matching, bool *flags, bool is_first_matching_block);
-void print_lines_block_separator_if_new_block(bool is_matching, const bool *flags, bool is_first_matching_block);
+void grep_printer(Line_Descriptor *line_desc, bool is_matching, bool *flags, bool is_first_matching_block, bool print_separator);
+void print_lines_block_separator_if_new_block(bool is_matching, const bool *flags, bool is_first_matching_block, bool print_separator);
 void handle_c_flag(bool c_flag, int matching_lines_amount);
 void update_line_descriptor(Line_Descriptor *line_desc, char *line_buffer);
 
@@ -39,7 +39,7 @@ void grep_execute_on_stream(FILE *input_stream, Regex_And_Flags *my_regex_and_fl
   Line_Descriptor line_desc = {NULL, 0, 0};
   char *line = NULL;
   bool is_matching_line, to_print;
-  bool is_first_matching_block = true;
+  bool is_first_matching_block = true, print_separator = false;
   size_t line_size = 0;
   int matching_line_counter = 0, lines_to_print = 0;
 
@@ -50,10 +50,10 @@ void grep_execute_on_stream(FILE *input_stream, Regex_And_Flags *my_regex_and_fl
 
     is_matching_line = check_if_matching_line(&line_desc, my_regex_and_flags);
 
-    to_print = check_if_print_and_update_lines_to_print(is_matching_line, &lines_to_print, my_regex_and_flags);
+    to_print = check_if_print_and_update_lines_to_print(is_matching_line, &print_separator, &lines_to_print, my_regex_and_flags);
 
     if (to_print) {
-      grep_printer(&line_desc, is_matching_line, my_regex_and_flags->flags, is_first_matching_block);
+      grep_printer(&line_desc, is_matching_line, my_regex_and_flags->flags, is_first_matching_block, print_separator);
     }
 
     if (is_matching_line) {
@@ -68,18 +68,23 @@ void grep_execute_on_stream(FILE *input_stream, Regex_And_Flags *my_regex_and_fl
   free(line);
 }
 
-bool check_if_print_and_update_lines_to_print(bool is_matching_line, int *p_lines_to_print,
+bool check_if_print_and_update_lines_to_print(bool is_matching_line, bool *p_print_separator, int *p_lines_to_print, 
                                               Regex_And_Flags *my_regex_and_flags)
 {
+
   if (my_regex_and_flags->flags[A_FLAG] == false) {
     return is_matching_line;
-  } else if (is_matching_line) {
+  }
+   else if (is_matching_line) {
+    *p_print_separator = (*p_lines_to_print == -1);
     *p_lines_to_print = my_regex_and_flags->A_flag_value;
     return true;
-  } else if (*p_lines_to_print > 0) {
+  }
+   else if (*p_lines_to_print >= 0) {
     (*p_lines_to_print) -= 1;
-    return true;
-  } else {
+    return  (*p_lines_to_print >= 0);
+  }
+   else {
     return false;
   }
 }
@@ -92,7 +97,8 @@ bool check_if_matching_line(Line_Descriptor *line_desc, Regex_And_Flags *my_rege
 
   for (i = 0; i < strlen(line_desc->line); i++) {
     if (check_x_flag_and_start_of_line(my_regex_and_flags->flags[X_FLAG], i)) {
-      return false;
+      is_matching = false;
+      break;
     }
     is_matching = is_matching_expression_at_place(line + i, my_regex_and_flags->regex_array,
                                                   my_regex_and_flags->regex_array_len, my_regex_and_flags->flags);
@@ -211,7 +217,7 @@ bool check_if_char_in_range(char current_char, Bracket bracket_block, bool is_ca
   return (current_char >= start_char && current_char <= end_char);
 }
 
-void grep_printer(Line_Descriptor *line_desc, bool is_matching, bool *flags, bool is_first_matching_block)
+void grep_printer(Line_Descriptor *line_desc, bool is_matching, bool *flags, bool is_first_matching_block, bool print_separator)
 {
   if (flags[C_FLAG]) {
     return;
@@ -222,25 +228,26 @@ void grep_printer(Line_Descriptor *line_desc, bool is_matching, bool *flags, boo
   if (is_matching == false) {
     separator = NOT_MATCHING_LINE_SEPARATOR;
   }
-  print_lines_block_separator_if_new_block(is_matching, flags, is_first_matching_block);
+  print_lines_block_separator_if_new_block(is_matching, flags, is_first_matching_block, print_separator);
 
-  if (flags[B_FLAG]) {
-    printf("%ld%c%s", line_desc->byte_counter - strlen(line_desc->line), separator, line_desc->line);
-  } else {
-    if (flags[N_FLAG]) {
-      printf("%d%c%s", line_desc->line_counter, separator, line_desc->line);
-    }
-
-    else {
-      printf("%s", line_desc->line);
-    }
+  if (flags[N_FLAG]) 
+  {
+    printf("%d%c", line_desc->line_counter, separator);
+  } 
+  if (flags[B_FLAG])
+  {
+    printf("%ld%c", line_desc->byte_counter -  strlen(line_desc->line), separator);
   }
+
+  printf("%s", line_desc->line);
+  
+  
 }
 
-void print_lines_block_separator_if_new_block(bool is_matching, const bool *flags, bool is_first_matching_block)
+void print_lines_block_separator_if_new_block(bool is_matching, const bool *flags, bool is_first_matching_block, bool print_separator)
 {
   if (is_matching) {
-    if (flags[A_FLAG] && flags[N_FLAG] == false && flags[B_FLAG] == false && (is_first_matching_block == false)) {
+    if (flags[A_FLAG] && (is_first_matching_block == false && print_separator)) {
       printf("%s\n", LINES_BLOCK_SEPARATOR);
     }
   }
