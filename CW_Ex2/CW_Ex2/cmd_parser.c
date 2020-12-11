@@ -1,3 +1,4 @@
+
 #include "error_mgr.h"
 #include "init_regex.h"
 #include <stdio.h>
@@ -5,16 +6,16 @@
 #include <string.h>
 
 void initialize_flags(bool flags_array[]);
-Flag load_flag_and_update_index(char **args, int *index, Regex_And_Flags *my_regex_and_flags);
+int load_flags_and_return_index(int arg_num, char** args, Regex_And_Flags* regex_and_flags);
+Flag load_flag_and_update_index(char **args, int *p_index, Regex_And_Flags *my_regex_and_flags);
 int get_flag_index(const char *current_flag);
 
 Error_Code_t parse_cmd_args(int arg_num, char **args, Regex_And_Flags **p_regex_and_flags, char **p_expression,
                             char **p_file_name)
 {
   Error_Code_t status = SUCCESS_CODE;
-  int arg_index;
-  Flag current_flag;
   Regex_And_Flags *regex_and_flags;
+  int arg_index;
 
   regex_and_flags = (Regex_And_Flags *)calloc(1, sizeof(Regex_And_Flags));
 
@@ -25,14 +26,7 @@ Error_Code_t parse_cmd_args(int arg_num, char **args, Regex_And_Flags **p_regex_
   }
   initialize_flags(regex_and_flags->flags);
 
-  arg_index = 1;
-  while (arg_index < arg_num) {
-    current_flag = load_flag_and_update_index(args, &arg_index, regex_and_flags);
-
-    if (current_flag == NOT_A_FLAG) {
-      break;
-    }
-  }
+  arg_index = load_flags_and_return_index(arg_num, args, regex_and_flags);
 
   *p_expression = args[arg_index];
 
@@ -56,9 +50,24 @@ void initialize_flags(bool flags_array[])
   }
 }
 
-Flag load_flag_and_update_index(char **args, int *index, Regex_And_Flags *my_regex_and_flags)
+int load_flags_and_return_index(int arg_num, char** args, Regex_And_Flags* regex_and_flags)
 {
-  Flag current_flag = get_flag_index(args[*index]);
+    Flag current_flag;
+    int arg_index = 1;
+
+    while (arg_index < arg_num) {
+        current_flag = load_flag_and_update_index(args, &arg_index, regex_and_flags);
+
+        if (current_flag == NOT_A_FLAG) {
+            break;
+        }
+    }
+    return arg_index;
+}
+
+Flag load_flag_and_update_index(char **args, int *p_index, Regex_And_Flags *my_regex_and_flags)
+{
+  Flag current_flag = get_flag_index(args[*p_index]);
 
   if (current_flag == NOT_A_FLAG) {
     return NOT_A_FLAG;
@@ -67,11 +76,11 @@ Flag load_flag_and_update_index(char **args, int *index, Regex_And_Flags *my_reg
   my_regex_and_flags->flags[current_flag] = true;
 
   if (current_flag == A_FLAG) {
-    my_regex_and_flags->A_flag_value = atoi(args[*index + 1]);
-    (*index)++;
+    my_regex_and_flags->A_flag_value = atoi(args[*p_index + 1]);
+    (*p_index)++;
   }
 
-  (*index)++;
+  (*p_index)++;
   return current_flag;
 }
 
@@ -83,6 +92,5 @@ int get_flag_index(const char *current_flag)
       return index;
     }
   }
-
   return NOT_A_FLAG;
 }
