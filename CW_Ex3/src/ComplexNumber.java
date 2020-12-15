@@ -63,7 +63,7 @@ public class ComplexNumber {
     }
 
     private ComplexNumber getInverse() {
-        return ComplexNumber.fromPolarCoordinates(1 /  this.getRadius(), -this.getArgument());
+        return ComplexNumber.fromPolarCoordinates(1 / this.getRadius(), -this.getArgument());
     }
 
     private double getDistance(double real, double imaginary) {
