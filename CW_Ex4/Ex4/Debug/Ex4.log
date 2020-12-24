@@ -1,0 +1,7 @@
+﻿  load_blancer.c
+c:\users\user\desktop\cw_ex4\ex4\ex4\load_blancer.c(9): warning C4013: 'malloc' undefined; assuming extern returning int
+c:\users\user\desktop\cw_ex4\ex4\ex4\load_blancer.c(10): warning C4013: 'initialize_socket' undefined; assuming extern returning int
+  main.c
+  Generating Code...
+load_blancer.obj : error LNK2019: unresolved external symbol _initialize_socket referenced in function _initialize_loadBalancer
+C:\Users\User\Desktop\CW_Ex4\Ex4\Debug\Ex4.exe : fatal error LNK1120: 1 unresolved externals
