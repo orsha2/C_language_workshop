@@ -1,8 +1,0 @@
-
-cmd_parser - parses the command line arguments, fills the flags array and returns the expression input  
-			 
-init_regex - fills the regex array according to the expression input 
-
-my_grep - performs the grep functionality, finds and prints the matching lines 
-
-error_mgr - checks variables values and prints appropriate errors  
