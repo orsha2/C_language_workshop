@@ -18,7 +18,7 @@ MSG = {
 class Server():
 
 	def __init__(self):
-		self._port = 1234 # self.get_port_number_from_cmd()
+		self._port =  self.get_port_number_from_cmd()
 		self._socket = socket()
 		self._socket.connect(('localhost', self._port))
 		self._max_size_of_reqest = MAX_SIZE_RECV
@@ -28,6 +28,7 @@ class Server():
 	def litsen_and_send(self):
 		while True:
 			self.read_msg_from_lb()
+			print(self._recv_msg)
 			is_counter_inside = self.is_counter_inside_msg()
 			msg_to_send = self.get_msg(is_counter_inside)
 			self._socket.send(msg_to_send.encode())
