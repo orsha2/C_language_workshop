@@ -1,7 +1,7 @@
 #ifndef LOAD_BALANCER_H
 #define LOAD_BALANCER_H
 
-#define SERVERS_NUMBER 1
+#define SERVERS_NUMBER 1 
 
 #include "error_mgr.h"
 
@@ -12,8 +12,9 @@ typedef enum _socket_arg
 } socket_arg;
 
 typedef struct _loadBalancer {
-	int lb_socket;
-	int http_socket;
+	int lb_main_servers_socket;
+	int lb_main_http_socket;
+	int lb_http_socket;
 	int servers_socket[SERVERS_NUMBER];
 }LoadBalancer;
 
