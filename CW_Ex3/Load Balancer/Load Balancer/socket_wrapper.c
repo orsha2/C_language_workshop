@@ -21,9 +21,10 @@ int bind_to_free_port(int socket);
 error_code_t listen_to_port_connections(int main_socket);
 struct sockaddr_in initialize_sockaddr(const char* str_ip, int port);
 int get_random_port(int lower_limit, int upper_limit);
-error_code_t check_socket_listen_result(int listen_result);
-bool is_end_of_msg(char* received_msg_buffer, int current_msg_length, char* end_of_msg);
+bool is_end_of_msg(char* received_msg_buffer, int current_msg_length,const char* end_of_msg);
 void append_segment_to_msg_buffer(char* received_msg, int* p_current_msg_length, char* msg_segment_buffer, int bytes_recv);
+error_code_t receive_message_segment(int com_socket, char* msg_segment_buffer, int* p_bytes_recv);
+error_code_t change_buffer_size(char** p_buffer, int new_size);
 
 
 error_code_t initialize_main_socket(int* p_socket, int* p_socket_port)
@@ -33,8 +34,12 @@ error_code_t initialize_main_socket(int* p_socket, int* p_socket_port)
 
 	new_main_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-	status = check_socket_creation_result(new_main_socket, INVALID_SOCKET, __FILE__, __LINE__, __func__);
-
+	//status = check_socket_creation_result(new_main_socket, INVALID_SOCKET, __FILE__, __LINE__, __func__);
+        
+        //linux
+	status = check_socket_creation_result(new_main_socket, -1 , __FILE__, __LINE__, __func__);
+        //linux
+	
 	if (status != SUCCESS_CODE)
 		return status;
 
@@ -74,7 +79,7 @@ error_code_t listen_to_port_connections(int main_socket)
 
 	listen_result = listen(main_socket, MAX_QUEUE_PENDING_CONNETIONS);
 
-	status = check_socket_listen_result(listen_result);
+	status = check_socket_listen_result(listen_result, __FILE__, __LINE__, __func__ );
 
 	return status;
 	
@@ -99,11 +104,11 @@ int get_random_port(int lower_limit, int upper_limit)
 
 void close_socket(int socket)
 {
-	shutdown(socket, SD_BOTH);
-	closesocket(socket);
+	//shutdown(socket, SD_BOTH);
+	//closesocket(socket);
 	// Linux 
-	//shutdown(socket, SHUT_RDWR);
-	//close(socket);
+	shutdown(socket, SHUT_RDWR);
+	close(socket);
 	// Linux
 }
 
@@ -116,10 +121,10 @@ error_code_t send_message(int communication_socket, char* msg_buffer, int msg_si
 	{
 		total_bytes_sent += send(communication_socket, msg_buffer, msg_size - total_bytes_sent, 0);
 
-		status = check_socket_send_result(total_bytes_sent, SOCKET_ERROR, __FILE__, __LINE__, __func__);
+		//status = check_socket_send_result(total_bytes_sent, SOCKET_ERROR, __FILE__, __LINE__, __func__);
 
 		// LINUX
-		// status = check_socket_send_result(total_bytes_sent, SO_ERROR, __FILE__, __LINE__, __func__);
+		status = check_socket_send_result(total_bytes_sent, SO_ERROR, __FILE__, __LINE__, __func__);
 		// LINUX
 
 		if (status != SUCCESS_CODE)
@@ -134,26 +139,26 @@ error_code_t send_message(int communication_socket, char* msg_buffer, int msg_si
 
 
 
-error_code_t receive_message(int communication_socket, char* end_of_msg, char** p_received_msg_buffer, int *p_received_msg_length)
+error_code_t receive_message(int communication_socket,const char* end_of_msg, char** p_received_msg_buffer, int *p_received_msg_length)
 {
 	error_code_t status = SUCCESS_CODE;
 
 	char* received_msg_buffer = *p_received_msg_buffer;
 	int msg_length = 0;
 
-	char* msg_segment_buffer[MSG_SEGMENT_SIZE];
+	char msg_segment_buffer[MSG_SEGMENT_SIZE];
 	int bytes_recv = 0;
 
 	do {
 		status = receive_message_segment(communication_socket, msg_segment_buffer, &bytes_recv);
 
 		if (status != SUCCESS_CODE)
-			return status; 
+			break; 
 
-		status = change_buffer_size(received_msg_buffer, msg_length + bytes_recv);
+		status = change_buffer_size(&received_msg_buffer, msg_length + bytes_recv);
 
 		if (status != SUCCESS_CODE)
-			return status;
+			break;
 
 		append_segment_to_msg_buffer(received_msg_buffer, &msg_length, msg_segment_buffer, bytes_recv);
 
@@ -165,13 +170,18 @@ error_code_t receive_message(int communication_socket, char* end_of_msg, char** 
 	return status;
 }
 
-error_code_t change_buffer_size(char* buffer, int new_size) 
+error_code_t change_buffer_size(char** p_buffer, int new_size) 
 {
 	error_code_t status = SUCCESS_CODE;
-
-	buffer = (char*)realloc(buffer, new_size);
+	char * buffer;
+	buffer = (char*)realloc(*p_buffer, new_size);
 
 	status = check_mem_alloc(buffer, __FILE__, __LINE__, __func__);
+	
+	if ( status == SUCCESS_CODE)
+	{
+		*p_buffer = buffer;
+	}
 
 	return status;
 }
@@ -181,8 +191,8 @@ error_code_t receive_message_segment(int com_socket, char* msg_segment_buffer, i
 	int bytes_recv;
 
 	bytes_recv = recv(com_socket, msg_segment_buffer, MSG_SEGMENT_SIZE, 0);
-
-	if (bytes_recv == SOCKET_ERROR) {
+        
+	if (bytes_recv == SO_ERROR) {
 		return SOCKET_RECV_FAILED;
 	}
 
@@ -198,8 +208,9 @@ error_code_t receive_message_segment(int com_socket, char* msg_segment_buffer, i
 void append_segment_to_msg_buffer(char* received_msg, int* p_current_msg_length, char* msg_segment_buffer, int bytes_recv)
 {
 	int current_msg_length = *p_current_msg_length;
+	int i;
 
-	for (size_t i = 0; i < bytes_recv; i++)
+	for (i = 0; i < bytes_recv; i++)
 	{
 		received_msg[current_msg_length + i] = msg_segment_buffer[i];
 	}
@@ -208,10 +219,10 @@ void append_segment_to_msg_buffer(char* received_msg, int* p_current_msg_length,
 
 }
 
-bool is_end_of_msg(char* received_msg_buffer, int current_msg_length, char* end_of_msg)
+bool is_end_of_msg(char* received_msg_buffer, int current_msg_length,const char* end_of_msg)
 {
 	char* received_msg_end = received_msg_buffer + current_msg_length - strlen(end_of_msg);
-	int i;
+	size_t i;
 	for( i = 0 ; i < strlen(end_of_msg);i++)
 	{
 		if (*received_msg_end != *end_of_msg)

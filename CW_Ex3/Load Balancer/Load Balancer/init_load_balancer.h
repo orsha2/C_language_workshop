@@ -18,8 +18,7 @@ typedef struct _loadBalancer {
 	int servers_socket[SERVERS_NUMBER];
 }LoadBalancer;
 
-error_code_t initialize_LB(LoadBalancer** LB);
-
+error_code_t initialize_load_balancer(LoadBalancer** p_LB);
 #endif  
 
 

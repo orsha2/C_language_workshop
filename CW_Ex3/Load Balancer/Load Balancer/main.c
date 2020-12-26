@@ -23,7 +23,7 @@ int main()
 	int current_handling_server = 0; 
 
 	//----------------------------------------------------------------------------
-	char* test_msg = "GET /counter bla  \r\n\r\n";
+	//char* test_msg = "GET /counter bla  \r\n\r\n";
 	//char msg_segment_buffer[200];
 	//status = send_message(LB->servers_socket[0], test_msg, strlen(test_msg));
 
@@ -42,27 +42,27 @@ int main()
 
 	while (1) 
 	{
-	    // recv msg from http 
-		// status =  receive_message(LB->lb_http_socket, END_OF_MSG, char** p_received_msg_buffer, int* p_received_msg_length);
-		//if (status != SUCCESS_CODE)
-		//	goto main_clean_up;
+	         
+		status =  receive_message(LB->lb_http_socket, END_OF_MSG, &received_msg, &received_msg_length);
+		if (status != SUCCESS_CODE)
+			goto main_clean_up;
 
-		status = send_message(LB->servers_socket[current_handling_server], test_msg, strlen(test_msg));
+		status = send_message(LB->servers_socket[current_handling_server], received_msg, received_msg_length);
 
 		if (status != SUCCESS_CODE)
 			goto main_clean_up;
 	     
 		status =  receive_message(LB->servers_socket[current_handling_server], END_OF_MSG, &received_msg, &received_msg_length);
+		//printf("received_msg_length = %d\n", received_msg_length);
+		//printf("received_msg = %s\n",received_msg) ;
 
 		if (status != SUCCESS_CODE)
 			goto main_clean_up;
-
-	    // send to http 
-		// status = send_message(LB->lb_http_socket, test_msg, strlen(test_msg));
-		//if (status != SUCCESS_CODE)
-		//	goto main_clean_up;
-		 printf("%s", received_msg);
-
+	        
+		status = send_message(LB->lb_http_socket, received_msg, received_msg_length);
+		if (status != SUCCESS_CODE)
+			goto main_clean_up;
+		
 		current_handling_server = (current_handling_server + 1) % SERVERS_NUMBER;
 	}
 
