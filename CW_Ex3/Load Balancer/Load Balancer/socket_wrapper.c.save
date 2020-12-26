@@ -6,8 +6,8 @@
 
 #define LOCAL_HOST "127.0.0.1"
 #define MAX_QUEUE_PENDING_CONNETIONS 10
-#define LOWER_PORT_LIMIT 1024
-#define UPPER_PORT_LIMIT 64000
+#define LOWER_PORT_LIMIT 1023
+#define UPPER_PORT_LIMIT 6399;
 #define MSG_SEGMENT_SIZE 32
 
 typedef enum _bind_status { BIND_SUCCESS = 0, BIND_FAILED } bind_status;
@@ -28,8 +28,8 @@ error_code_t initialize_main_socket(int* p_socket, int* p_socket_port)
   error_code_t status = SUCCESS_CODE;
   int new_main_socket;
 
-  new_main_socket = socket(AF_INET, SOCK_STREAM , IPPROTO_TCP);
- 
+  new_main_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
   status = check_socket_creation_result(new_main_socket, -1, __FILE__, __LINE__, __func__);
 
   if (status != SUCCESS_CODE) {
@@ -49,15 +49,12 @@ int bind_to_free_port(int socket)
   int bind_status = BIND_FAILED;
   int port;
   struct sockaddr_in service;
-  int flag =1;
 
   while (bind_status != BIND_SUCCESS) {
     port = get_random_port(LOWER_PORT_LIMIT, UPPER_PORT_LIMIT);
 
     service = initialize_sockaddr(LOCAL_HOST, port);
 
-    setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
-   
     bind_status = bind(socket, (struct sockaddr*)&service, sizeof(service));
   }
 
@@ -171,7 +168,7 @@ error_code_t receive_message_segment(int com_socket, char* msg_segment_buffer, i
 
   bytes_recv = recv(com_socket, msg_segment_buffer, MSG_SEGMENT_SIZE, 0);
 
-  if (bytes_recv == -1) {
+  if (bytes_recv == SO_ERROR) {
     return SOCKET_RECV_FAILED;
   }
 

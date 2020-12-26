@@ -1,17 +1,15 @@
 
+#include "error_mgr.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "error_mgr.h"
 
 const char *MSG_ERR_CANNOT_OPEN_FILE = "Couldn't open file";
 const char *MSG_ERR_MEM_ALLOC = "Memory allocation error";
-const char* MSG_ERR_SOCKET_CREATION_FAILED = "Socket creation failed" ;
-const char* MSG_ERR_SOCKET_LISTEN_FAILED = "Socket listen creation failed";
-const char* MSG_ERR_SOCKET_SEND_FAILED = "Socket send creation failed";
-
+const char *MSG_ERR_SOCKET_CREATION_FAILED = "Socket creation failed";
+const char *MSG_ERR_SOCKET_LISTEN_FAILED = "Socket listen creation failed";
+const char *MSG_ERR_SOCKET_SEND_FAILED = "Socket send creation failed";
 
 void print_error(const char *msg, const char *file, int line, const char *func_name);
-
 
 void print_error(const char *msg, const char *file, int line, const char *func_name)
 {
@@ -38,32 +36,31 @@ error_code_t check_file_opening(FILE *file_ptr, const char *file, int line, cons
   return SUCCESS_CODE;
 }
 
-error_code_t check_socket_creation_result(int new_socket, int invalid_socket_value, const char *file, int line, const char *func_name)
+error_code_t check_socket_creation_result(int new_socket, int invalid_socket_value, const char *file, int line,
+                                          const char *func_name)
 {
-	if (new_socket == invalid_socket_value)
-	{
-		print_error(MSG_ERR_SOCKET_CREATION_FAILED, file, line, func_name);
-		return SOCKET_CREATION_FAILED;
-	}
-	return SUCCESS_CODE;
+  if (new_socket == invalid_socket_value) {
+    print_error(MSG_ERR_SOCKET_CREATION_FAILED, file, line, func_name);
+    return SOCKET_CREATION_FAILED;
+  }
+  return SUCCESS_CODE;
 }
 
-error_code_t check_socket_listen_result(int listen_result, const char* file, int line, const char* func_name)
+error_code_t check_socket_listen_result(int listen_result, const char *file, int line, const char *func_name)
 {
-	if (listen_result != SUCCESS_CODE)
-	{
-		print_error(MSG_ERR_SOCKET_LISTEN_FAILED, file, line, func_name);
-		return SOCKET_LISTEN_FAILED;
-	}
-	return SUCCESS_CODE;
+  if (listen_result != SUCCESS_CODE) {
+    print_error(MSG_ERR_SOCKET_LISTEN_FAILED, file, line, func_name);
+    return SOCKET_LISTEN_FAILED;
+  }
+  return SUCCESS_CODE;
 }
 
-error_code_t  check_socket_send_result(int send_result, int invalid_send_result, const char* file, int line, const char* func_name)
+error_code_t check_socket_send_result(int send_result, int invalid_send_result, const char *file, int line,
+                                      const char *func_name)
 {
-	if (send_result == invalid_send_result)
-	{
-		print_error(MSG_ERR_SOCKET_SEND_FAILED, file, line, func_name);
-		return SOCKET_SEND_FAILED;
-	}
-	return SUCCESS_CODE;
+  if (send_result == invalid_send_result) {
+    print_error(MSG_ERR_SOCKET_SEND_FAILED, file, line, func_name);
+    return SOCKET_SEND_FAILED;
+  }
+  return SUCCESS_CODE;
 }

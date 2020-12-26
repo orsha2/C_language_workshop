@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7 -tt
 
 import sys
-from socket import socket
+from socket import *
 
 END_OF_MSG = '\r\n\r\n'
 MAX_SIZE_RECV = 1024
@@ -32,15 +32,15 @@ class Server():
 
             msg_to_send = self.get_msg_to_send(is_valid_msg)
 
-            self._socket.send(msg_to_send.encode())
+            self._socket.send(msg_to_send)
 
     def recv_msg_from_lb(self):
         recv_msg = ''
 
         while END_OF_MSG not in recv_msg:
-            current_msg_segment = self._socket.recv(MAX_SIZE_RECV).decode()
+            current_msg_segment = self._socket.recv(MAX_SIZE_RECV)
             recv_msg += str(current_msg_segment)
-
+	
         return recv_msg
 
     def get_msg_to_send(self, is_valid_msg):
