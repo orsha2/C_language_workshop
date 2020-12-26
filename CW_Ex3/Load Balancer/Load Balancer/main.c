@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
@@ -13,36 +12,20 @@ int main()
 {
 	error_code_t status = SUCCESS_CODE;
 	LoadBalancer *LB;
+	int current_handling_server = 0;
+	char* received_msg = NULL;
+	int received_msg_length = 0;
 	srand(time(0));
 
 	status = initialize_load_balancer(&LB);
 
 	if (status != SUCCESS_CODE)
+	{
 		goto main_clean_up;
-
-	int current_handling_server = 0; 
-
-	//----------------------------------------------------------------------------
-	//char* test_msg = "GET /counter bla  \r\n\r\n";
-	//char msg_segment_buffer[200];
-	//status = send_message(LB->servers_socket[0], test_msg, strlen(test_msg));
-
-	//if (status != SUCCESS_CODE)
-	//		goto main_clean_up;
-
-	//status = recv(LB->servers_socket[0], msg_segment_buffer, 200, 0);
-	//printf("msg_segment_buffer = %s\n", msg_segment_buffer);
-
-	//if (status != SUCCESS_CODE)
-	//	goto main_clean_up;
-	//----------------------------------------------------------------------------
-
-	char* received_msg = NULL;
-	int received_msg_length=0;
+	}
 
 	while (1) 
-	{
-	         
+	{ 
 		status =  receive_message(LB->lb_http_socket, END_OF_MSG, &received_msg, &received_msg_length);
 		if (status != SUCCESS_CODE)
 			goto main_clean_up;
@@ -53,8 +36,6 @@ int main()
 			goto main_clean_up;
 	     
 		status =  receive_message(LB->servers_socket[current_handling_server], END_OF_MSG, &received_msg, &received_msg_length);
-		//printf("received_msg_length = %d\n", received_msg_length);
-		//printf("received_msg = %s\n",received_msg) ;
 
 		if (status != SUCCESS_CODE)
 			goto main_clean_up;
@@ -65,14 +46,6 @@ int main()
 		
 		current_handling_server = (current_handling_server + 1) % SERVERS_NUMBER;
 	}
-
-
-
-
-
-
-
-
 
 main_clean_up:
 	close_socket(LB->lb_main_http_socket);

@@ -67,27 +67,3 @@ error_code_t  check_socket_send_result(int send_result, int invalid_send_result,
 	}
 	return SUCCESS_CODE;
 }
-
-//error_code_t check_winsock_result(int winsock_result, winsock_operation winsock_op)
-//{
-//	error_code_t status = SUCCESS_CODE;
-//	char* err_msg = NULL;
-//
-//	if (winsock_result != 0)
-//	{
-//		switch (winsock_op)
-//		{
-//		case INITIALIZATION:
-//			err_msg = MSG_ERR_WINSOCK_INITIALIZATION_FAILED;
-//			status = WINSOCK_INITIALIZATION_FAILED;
-//			break;
-//
-//		case DEINITIALIZATION:
-//			err_msg = MSG_ERR_WINSOCK_INITIALIZATION_FAILED;
-//			status = WINSOCK_INITIALIZATION_FAILED;
-//			break;
-//		}
-//		print_error(err_msg, __FILE__, __LINE__, __func__);
-//	}
-//	return status;
-//}

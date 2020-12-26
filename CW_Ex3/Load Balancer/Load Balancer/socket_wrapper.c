@@ -34,11 +34,7 @@ error_code_t initialize_main_socket(int* p_socket, int* p_socket_port)
 
 	new_main_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-	//status = check_socket_creation_result(new_main_socket, INVALID_SOCKET, __FILE__, __LINE__, __func__);
-        
-        //linux
 	status = check_socket_creation_result(new_main_socket, -1 , __FILE__, __LINE__, __func__);
-        //linux
 	
 	if (status != SUCCESS_CODE)
 		return status;
@@ -67,7 +63,6 @@ int bind_to_free_port(int socket)
 		bind_status = bind(socket, (struct sockaddr *)&service, sizeof(service));
 	}
 
-	printf("port = %d \n", port);
 	return port;
 }
 
@@ -104,12 +99,9 @@ int get_random_port(int lower_limit, int upper_limit)
 
 void close_socket(int socket)
 {
-	//shutdown(socket, SD_BOTH);
-	//closesocket(socket);
-	// Linux 
 	shutdown(socket, SHUT_RDWR);
 	close(socket);
-	// Linux
+
 }
 
 error_code_t send_message(int communication_socket, char* msg_buffer, int msg_size)
@@ -121,11 +113,7 @@ error_code_t send_message(int communication_socket, char* msg_buffer, int msg_si
 	{
 		total_bytes_sent += send(communication_socket, msg_buffer, msg_size - total_bytes_sent, 0);
 
-		//status = check_socket_send_result(total_bytes_sent, SOCKET_ERROR, __FILE__, __LINE__, __func__);
-
-		// LINUX
 		status = check_socket_send_result(total_bytes_sent, SO_ERROR, __FILE__, __LINE__, __func__);
-		// LINUX
 
 		if (status != SUCCESS_CODE)
 			return status;
@@ -135,9 +123,6 @@ error_code_t send_message(int communication_socket, char* msg_buffer, int msg_si
 	}
 	return SUCCESS_CODE;
 }
-
-
-
 
 error_code_t receive_message(int communication_socket,const char* end_of_msg, char** p_received_msg_buffer, int *p_received_msg_length)
 {
@@ -233,31 +218,3 @@ bool is_end_of_msg(char* received_msg_buffer, int current_msg_length,const char*
 	}
 	return true;
 }
-
-
-// --------------------------------------------------------------------------------------------------------------------------------------------
-//
-//error_code_t initialize_winsock()
-//{
-//	error_code_t status = SUCCESS_CODE;
-//
-//	WSADATA wsa_data;
-//
-//	int winsock_result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
-//
-//	status = check_winsock_result(winsock_result, INITIALIZATION);
-//
-//	return status;
-//}
-//
-//error_code_t deinitialize_winsock()
-//{
-//	error_code_t status = SUCCESS_CODE;
-//
-//	int winsock_result = WSACleanup();
-//
-//	status = check_winsock_result(winsock_result, INITIALIZATION);
-//
-//	return status;
-//}
-//
