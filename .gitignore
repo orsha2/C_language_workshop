@@ -17,5 +17,5 @@
 *.manifest
 *.recipe
 *.log
-CW_Ex1/CW_Ex1/Debug/CW_Ex1.vcxproj.FileListAbsolute.txt
-CW_Ex2/CW_Ex2/Debug/CW_Ex2.vcxproj.FileListAbsolute.txt
+*.vcxproj.FileListAbsolute.txt
+*\.vscode/
