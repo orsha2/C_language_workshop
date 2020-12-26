@@ -19,12 +19,13 @@ static const int UPPER_PORT_LIMIT = 63999;
 
 int bind_to_free_port(int socket);
 error_code_t listen_to_port_connections(int main_socket);
-struct sockaddr_in initialize_sockaddr(const char* str_ip, int port);
 int get_random_port(int lower_limit, int upper_limit);
-bool is_end_of_msg(char* received_msg_buffer, int current_msg_length,const char* end_of_msg);
-void append_segment_to_msg_buffer(char* received_msg, int* p_current_msg_length, char* msg_segment_buffer, int bytes_recv);
+struct sockaddr_in initialize_sockaddr(const char* str_ip, int port);
+
 error_code_t receive_message_segment(int com_socket, char* msg_segment_buffer, int* p_bytes_recv);
 error_code_t change_buffer_size(char** p_buffer, int new_size);
+void append_segment_to_msg_buffer(char* received_msg, int* p_current_msg_length, char* msg_segment_buffer, int bytes_recv); 
+bool is_end_of_msg(char* received_msg_buffer, int current_msg_length, const char* end_of_msg);
 
 
 error_code_t initialize_main_socket(int* p_socket, int* p_socket_port)
@@ -124,7 +125,7 @@ error_code_t send_message(int communication_socket, char* msg_buffer, int msg_si
 	return SUCCESS_CODE;
 }
 
-error_code_t receive_message(int communication_socket,const char* end_of_msg, char** p_received_msg_buffer, int *p_received_msg_length)
+error_code_t receive_message(int communication_socket,const char* end_of_msg, int end_of_msg_length, char** p_received_msg_buffer, int *p_received_msg_length)
 {
 	error_code_t status = SUCCESS_CODE;
 
@@ -147,7 +148,7 @@ error_code_t receive_message(int communication_socket,const char* end_of_msg, ch
 
 		append_segment_to_msg_buffer(received_msg_buffer, &msg_length, msg_segment_buffer, bytes_recv);
 
-	} while (is_end_of_msg(received_msg_buffer, msg_length, end_of_msg) == false);
+	} while (is_end_of_msg(received_msg_buffer, msg_length, end_of_msg, end_of_msg_length) == false);
 	
 	*p_received_msg_buffer = received_msg_buffer;
 	*p_received_msg_length = msg_length; 
@@ -204,11 +205,12 @@ void append_segment_to_msg_buffer(char* received_msg, int* p_current_msg_length,
 
 }
 
-bool is_end_of_msg(char* received_msg_buffer, int current_msg_length,const char* end_of_msg)
+bool is_end_of_msg(char* received_msg_buffer, int current_msg_length, const char* end_of_msg, int end_of_msg_length)
 {
-	char* received_msg_end = received_msg_buffer + current_msg_length - strlen(end_of_msg);
+	char* received_msg_end = received_msg_buffer + current_msg_length - end_of_msg_length;
+
 	size_t i;
-	for( i = 0 ; i < strlen(end_of_msg);i++)
+	for (i = 0; i < end_of_msg_length; i++)
 	{
 		if (*received_msg_end != *end_of_msg)
 			return false;

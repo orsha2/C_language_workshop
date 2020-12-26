@@ -17,5 +17,6 @@
 *.manifest
 *.recipe
 *.log
+
 *.vcxproj.FileListAbsolute.txt
 *\.vscode/
