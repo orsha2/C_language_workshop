@@ -1,7 +1,7 @@
 #ifndef INIT_LOAD_BALANCER_H
 #define INIT_LOAD_BALANCER_H
 
-#define SERVERS_NUMBER 1
+#define SERVERS_NUMBER 3
 
 #include "error_mgr.h"
 

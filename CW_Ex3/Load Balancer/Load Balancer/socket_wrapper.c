@@ -28,8 +28,8 @@ error_code_t initialize_main_socket(int* p_socket, int* p_socket_port)
   error_code_t status = SUCCESS_CODE;
   int new_main_socket;
 
-  new_main_socket = socket(AF_INET, SOCK_STREAM , IPPROTO_TCP);
- 
+  new_main_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
   status = check_socket_creation_result(new_main_socket, -1, __FILE__, __LINE__, __func__);
 
   if (status != SUCCESS_CODE) {
@@ -49,7 +49,7 @@ int bind_to_free_port(int socket)
   int bind_status = BIND_FAILED;
   int port;
   struct sockaddr_in service;
-  int flag =1;
+  int flag = 1;
 
   while (bind_status != BIND_SUCCESS) {
     port = get_random_port(LOWER_PORT_LIMIT, UPPER_PORT_LIMIT);
@@ -57,7 +57,7 @@ int bind_to_free_port(int socket)
     service = initialize_sockaddr(LOCAL_HOST, port);
 
     setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
-   
+
     bind_status = bind(socket, (struct sockaddr*)&service, sizeof(service));
   }
 
@@ -135,6 +135,7 @@ error_code_t receive_message(int communication_socket, const char* end_of_msg, i
     if (status != SUCCESS_CODE) {
       break;
     }
+
     status = change_buffer_size(&received_msg_buffer, msg_length + bytes_recv);
 
     if (status != SUCCESS_CODE) {

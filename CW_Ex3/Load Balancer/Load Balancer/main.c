@@ -28,6 +28,12 @@ int main()
 
   while (true) {
     status = receive_message(LB.lb_http_socket, END_OF_MSG, END_OF_MSG_LENGTH, &received_msg, &received_msg_length);
+
+    if (status == SOCKET_CONNECTION_CLOSED) {
+      LB.lb_http_socket = accept(LB.lb_main_http_socket, NULL, NULL);
+      continue;
+    }
+
     if (status != SUCCESS_CODE) {
       goto main_clean_up;
     }
@@ -37,14 +43,14 @@ int main()
     if (status != SUCCESS_CODE) {
       goto main_clean_up;
     }
-    
+
     status = receive_message(LB.servers_socket[current_handling_server], END_OF_MSG, END_OF_MSG_LENGTH, &received_msg,
                              &received_msg_length);
-    
+
     if (status != SUCCESS_CODE) {
       goto main_clean_up;
     }
-    	
+
     status = send_message(LB.lb_http_socket, received_msg, received_msg_length);
     if (status != SUCCESS_CODE) {
       goto main_clean_up;
@@ -55,18 +61,16 @@ int main()
 
 main_clean_up:
   free_main_resources(&LB);
-  close_socket(LB.lb_main_http_socket);
-  close_socket(LB.lb_main_servers_socket);
   return 0;
 }
 
 void free_main_resources(LoadBalancer* p_lb)
 {
-  close_socket(p_lb->lb_main_http_socket);
-  close_socket(p_lb->lb_main_servers_socket);
+  close(p_lb->lb_main_http_socket);
+  close(p_lb->lb_main_servers_socket);
 
   int server_index;
   for (server_index = 0; server_index < SERVERS_NUMBER; server_index++) {
-    close_socket(p_lb->lb_main_servers_socket);
+    close(p_lb->lb_main_servers_socket);
   }
 }
