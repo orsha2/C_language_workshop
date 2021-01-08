@@ -80,7 +80,7 @@ error_code_t listen_to_port_connections(int main_socket)
 
   listen_result = listen(main_socket, MAX_QUEUE_PENDING_CONNETIONS);
 
-  status = check_socket_result(listen_result, SOCKET_ERROR, SOCKET_LISTEN_FAILED __FILE__, __LINE__, __func__);
+  status = check_socket_result(listen_result, SOCKET_ERROR, SOCKET_LISTEN_FAILED, __FILE__, __LINE__, __func__);
 
   return status;
 }
@@ -171,6 +171,7 @@ error_code_t change_buffer_size(char** p_buffer, int new_size)
 
 error_code_t receive_message_segment(int com_socket, char* msg_segment_buffer, int* p_bytes_recv)
 {
+  error_code_t status = SUCCESS_CODE;
   int bytes_recv;
 
   bytes_recv = recv(com_socket, msg_segment_buffer, MSG_SEGMENT_SIZE, 0);
@@ -183,7 +184,7 @@ error_code_t receive_message_segment(int com_socket, char* msg_segment_buffer, i
 
   *p_bytes_recv = bytes_recv;
 
-  return SUCCESS_CODE;
+  return status;
 }
 
 void append_segment_to_msg_buffer(char* received_msg, int* p_current_msg_length, const char* msg_segment_buffer,

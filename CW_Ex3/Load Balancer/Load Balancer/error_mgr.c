@@ -6,7 +6,7 @@
 char* ERR_MSG[] = {
   "SUCCESS!",
 
-  "Args - wrong amount of arguments."
+  "Args - wrong amount of arguments.",
   "Memory - allocation error.",
   "File - opening failed.",
 
@@ -18,6 +18,7 @@ char* ERR_MSG[] = {
 };
 
 void print_error(error_code_t error_code, const char *file, int line, const char *func_name);
+
 
 void print_error(error_code_t error_code, const char *file, int line, const char *func_name)
 {
