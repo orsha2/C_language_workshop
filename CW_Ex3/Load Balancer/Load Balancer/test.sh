@@ -9,21 +9,22 @@ disown
 ./ex3_server `cat server_port` &
 disown
 
-python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` | diff ~nimrodav/socket_ex/1 -
-#python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` | diff ~nimrodav/socket_ex/1 -
-#python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` | diff ~nimrodav/socket_ex/1 -
+python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port`  #| diff ~nimrodav/socket_ex/1 -
+python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port`  #| diff ~nimrodav/socket_ex/1 -
+python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port`  #| diff ~nimrodav/socket_ex/1 -
 
-#python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` | diff ~nimrodav/socket_ex/2 -
-#python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` | diff ~nimrodav/socket_ex/2 -
-#python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` | diff ~nimrodav/socket_ex/2 -
+python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` #| diff ~nimrodav/socket_ex/2 -
+python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` #| diff ~nimrodav/socket_ex/2 -
+python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` #| diff ~nimrodav/socket_ex/2 -
 
-#python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` | diff ~nimrodav/socket_ex/3 -
-#python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` | diff ~nimrodav/socket_ex/3 -
-#python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` | diff ~nimrodav/socket_ex/3 -
+python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` #| diff ~nimrodav/socket_ex/3 -
+python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` #| diff ~nimrodav/socket_ex/3 -
+python2.7 ~nimrodav/socket_ex/run_test.py `cat http_port` #| diff ~nimrodav/socket_ex/3 -
 
 rm server_port
 rm http_port
 
+sleep 1
 pkill -x -u `whoami` "ex3_lb"
 pkill -x -u `whoami` "ex3_server"
 pkill -f -u `whoami` "python2.7"
