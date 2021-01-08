@@ -5,23 +5,30 @@
 #include <stdlib.h>
 
 #define LOCAL_HOST "127.0.0.1"
-#define MAX_QUEUE_PENDING_CONNETIONS 10
+
 #define LOWER_PORT_LIMIT 1024
 #define UPPER_PORT_LIMIT 64000
+
+#define MAX_QUEUE_PENDING_CONNETIONS 10
+
 #define MSG_SEGMENT_SIZE 32
+
+#define SOCKET_ERROR -1
 
 typedef enum _bind_status { BIND_SUCCESS = 0, BIND_FAILED } bind_status;
 
 int bind_to_free_port(int socket);
 error_code_t listen_to_port_connections(int main_socket);
-int get_random_port(int lower_limit, int upper_limit);
-struct sockaddr_in initialize_sockaddr(const char* str_ip, int port);
 
 error_code_t receive_message_segment(int com_socket, char* msg_segment_buffer, int* p_bytes_recv);
 error_code_t change_buffer_size(char** p_buffer, int new_size);
 void append_segment_to_msg_buffer(char* received_msg, int* p_current_msg_length, const char* msg_segment_buffer,
                                   int bytes_recv);
 bool is_end_of_msg(char* received_msg_buffer, int current_msg_length, const char* end_of_msg, int end_of_msg_length);
+
+struct sockaddr_in initialize_sockaddr(const char* str_ip, int port);
+int get_random_port(int lower_limit, int upper_limit);
+
 
 error_code_t initialize_main_socket(int* p_socket, int* p_socket_port)
 {
@@ -30,7 +37,7 @@ error_code_t initialize_main_socket(int* p_socket, int* p_socket_port)
 
   new_main_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-  status = check_socket_creation_result(new_main_socket, -1, __FILE__, __LINE__, __func__);
+  status = check_socket_result(new_main_socket, SOCKET_ERROR, SOCKET_CREATION_FAILED, __FILE__, __LINE__, __func__);
 
   if (status != SUCCESS_CODE) {
     return status;
@@ -46,17 +53,18 @@ error_code_t initialize_main_socket(int* p_socket, int* p_socket_port)
 
 int bind_to_free_port(int socket)
 {
-  int bind_status = BIND_FAILED;
-  int port;
   struct sockaddr_in service;
-  int flag = 1;
+
+  int bind_status = BIND_FAILED;
+  int enable_reuse_addr = 1;
+  int port;
+
+  setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &enable_reuse_addr, sizeof(enable_reuse_addr));
 
   while (bind_status != BIND_SUCCESS) {
     port = get_random_port(LOWER_PORT_LIMIT, UPPER_PORT_LIMIT);
 
     service = initialize_sockaddr(LOCAL_HOST, port);
-
-    setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
 
     bind_status = bind(socket, (struct sockaddr*)&service, sizeof(service));
   }
@@ -72,7 +80,7 @@ error_code_t listen_to_port_connections(int main_socket)
 
   listen_result = listen(main_socket, MAX_QUEUE_PENDING_CONNETIONS);
 
-  status = check_socket_listen_result(listen_result, __FILE__, __LINE__, __func__);
+  status = check_socket_result(listen_result, SOCKET_ERROR, SOCKET_LISTEN_FAILED __FILE__, __LINE__, __func__);
 
   return status;
 }
@@ -94,12 +102,6 @@ int get_random_port(int lower_limit, int upper_limit)
   return lower_limit + (rand() % range);
 }
 
-void close_socket(int socket)
-{
-  shutdown(socket, SHUT_RDWR);
-  close(socket);
-}
-
 error_code_t send_message(int communication_socket, char* msg_buffer, int msg_size)
 {
   error_code_t status = SUCCESS_CODE;
@@ -108,7 +110,7 @@ error_code_t send_message(int communication_socket, char* msg_buffer, int msg_si
   while (total_bytes_sent < msg_size) {
     total_bytes_sent += send(communication_socket, msg_buffer, msg_size - total_bytes_sent, 0);
 
-    status = check_socket_send_result(total_bytes_sent, SO_ERROR, __FILE__, __LINE__, __func__);
+    status = check_socket_result(total_bytes_sent, SOCKET_ERROR, SOCKET_SEND_FAILED, __FILE__, __LINE__, __func__);
 
     if (status != SUCCESS_CODE) {
       return status;
@@ -141,6 +143,7 @@ error_code_t receive_message(int communication_socket, const char* end_of_msg, i
     if (status != SUCCESS_CODE) {
       break;
     }
+
     append_segment_to_msg_buffer(received_msg_buffer, &msg_length, msg_segment_buffer, bytes_recv);
 
   } while (is_end_of_msg(received_msg_buffer, msg_length, end_of_msg, end_of_msg_length) == false);
@@ -172,13 +175,11 @@ error_code_t receive_message_segment(int com_socket, char* msg_segment_buffer, i
 
   bytes_recv = recv(com_socket, msg_segment_buffer, MSG_SEGMENT_SIZE, 0);
 
-  if (bytes_recv == -1) {
-    return SOCKET_RECV_FAILED;
+  if (bytes_recv == 0) {
+      return SOCKET_CONNECTION_CLOSED;
   }
 
-  if (bytes_recv == 0) {
-    return SOCKET_CONNECTION_CLOSED;
-  }
+  status = check_socket_result(bytes_recv, SOCKET_ERROR, SOCKET_RECV_FAILED, __FILE__, __LINE__, __func__);
 
   *p_bytes_recv = bytes_recv;
 

@@ -16,11 +16,10 @@ typedef enum {
 } error_code_t;
 
 error_code_t check_mem_alloc(void* ptr, const char* file, int line, const char* func_name);
+
 error_code_t check_file_opening(FILE* file_ptr, const char* file, int line, const char* func_name);
-error_code_t check_socket_creation_result(int new_socket, int invalid_socket_value, const char* file, int line,
-                                          const char* func_name);
-error_code_t check_socket_listen_result(int listen_result, const char* file, int line, const char* func_name);
-error_code_t check_socket_send_result(int send_result, int invalid_send_result, const char* file, int line,
-                                      const char* func_name);
+
+error_code_t check_socket_result(int socket_result, int invalid_socket_result, error_code_t error_code, 
+								 const char* file, int line, const char* func_name)
 
 #endif
