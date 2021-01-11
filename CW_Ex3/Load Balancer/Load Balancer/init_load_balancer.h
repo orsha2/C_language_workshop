@@ -1,11 +1,11 @@
 #ifndef INIT_LOAD_BALANCER_H
 #define INIT_LOAD_BALANCER_H
 
-#define SERVERS_NUMBER 3
-
 #include "error_mgr.h"
 
-typedef struct _loadBalancer {
+#define SERVERS_NUMBER 3
+
+typedef struct _LoadBalancer {
   int lb_main_servers_socket;
   int lb_main_http_socket;
 
@@ -14,4 +14,5 @@ typedef struct _loadBalancer {
 } LoadBalancer;
 
 error_code_t initialize_load_balancer(LoadBalancer* p_LB);
+
 #endif

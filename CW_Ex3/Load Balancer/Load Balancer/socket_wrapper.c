@@ -1,8 +1,11 @@
 
-#include "socket_wrapper.h"
-#include "error_mgr.h"
 #include <stdbool.h>
 #include <stdlib.h>
+
+#include "socket_wrapper.h"
+#include "error_mgr.h"
+
+typedef enum _bind_status { BIND_SUCCESS = 0, BIND_FAILED } bind_status;
 
 #define LOCAL_HOST "127.0.0.1"
 
@@ -12,10 +15,6 @@
 #define MAX_QUEUE_PENDING_CONNETIONS 10
 
 #define MSG_SEGMENT_SIZE 32
-
-#define SOCKET_ERROR -1
-
-typedef enum _bind_status { BIND_SUCCESS = 0, BIND_FAILED } bind_status;
 
 int bind_to_free_port(int socket);
 error_code_t listen_to_port_connections(int main_socket);

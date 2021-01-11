@@ -27,6 +27,9 @@ void print_error(error_code_t error_code, const char *file, int line, const char
   printf("Line: %d, Function: %s\n", line, func_name);
 }
 
+// Lab instructor said that the following 3 functions contain code duplications, 
+// but that's OK as they receive arguments of different types
+
 error_code_t check_mem_alloc(void *ptr, const char *file, int line, const char *func_name)
 {
   if (ptr == NULL) {
