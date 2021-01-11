@@ -1,5 +1,5 @@
 
-#include <stdlib.h> 
+#include <stdlib.h>
 
 #include "init_load_balancer.h"
 #include "socket_wrapper.h"
@@ -11,7 +11,6 @@ void initialize_load_balancer_fields_to_default_values(LoadBalancer* p_LB);
 
 error_code_t write_port_to_file(const char* file_name, int port_num);
 error_code_t write_occupied_ports_to_file(int http_port, int servers_port);
-
 
 error_code_t initialize_load_balancer(LoadBalancer* p_LB)
 {
@@ -39,11 +38,11 @@ error_code_t initialize_load_balancer(LoadBalancer* p_LB)
     return status;
   }
 
-  p_LB->lb_http_socket = accept(p_LB->lb_main_http_socket, NULL, NULL);
-
   for (server_index = 0; server_index < SERVERS_NUMBER; server_index++) {
     p_LB->servers_socket[server_index] = accept(p_LB->lb_main_servers_socket, NULL, NULL);
   }
+
+  p_LB->lb_http_socket = accept(p_LB->lb_main_http_socket, NULL, NULL);
 
   return status;
 }
@@ -56,7 +55,7 @@ void initialize_load_balancer_fields_to_default_values(LoadBalancer* p_LB)
 
   int server_index;
   for (server_index = 0; server_index < SERVERS_NUMBER; server_index++) {
-      p_LB->servers_socket[server_index] = SOCKET_ERROR;
+    p_LB->servers_socket[server_index] = SOCKET_ERROR;
   }
 }
 

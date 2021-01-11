@@ -11,7 +11,6 @@
 error_code_t balance_load_between_servers(LoadBalancer* LB);
 void free_main_resources(LoadBalancer* p_LB);
 
-
 int main()
 {
   error_code_t status = SUCCESS_CODE;
@@ -53,8 +52,8 @@ error_code_t balance_load_between_servers(LoadBalancer* p_LB)
     if (status != SUCCESS_CODE) {
       goto balance_load_between_servers_exit;
     }
-    status = receive_message(p_LB->servers_socket[current_handling_server], END_OF_MSG, END_OF_MSG_LENGTH, &received_msg,
-                             &received_msg_length);
+    status = receive_message(p_LB->servers_socket[current_handling_server], END_OF_MSG, END_OF_MSG_LENGTH,
+                             &received_msg, &received_msg_length);
 
     if (status != SUCCESS_CODE) {
       goto balance_load_between_servers_exit;
@@ -69,8 +68,9 @@ error_code_t balance_load_between_servers(LoadBalancer* p_LB)
 
 balance_load_between_servers_exit:
 
-  if (received_msg != NULL)
+  if (received_msg != NULL) {
     free(received_msg);
+  }
 
   return status;
 }
@@ -86,7 +86,7 @@ void free_main_resources(LoadBalancer* p_LB)
   }
 
   if (p_LB->lb_http_socket != SOCKET_ERROR) {
-      close(p_LB->lb_http_socket);
+    close(p_LB->lb_http_socket);
   }
 
   int server_index;

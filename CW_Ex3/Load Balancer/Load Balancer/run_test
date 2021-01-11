@@ -1,0 +1,56 @@
+#!/usr/bin/python2.7 -tt
+
+import sys
+from socket import *
+import random
+import time
+
+port = int(sys.argv[1])
+
+request = 'GET /counter HTTP/1.1\r\n\r\n'
+
+s = socket()
+s.connect(('localhost', port))
+first_part_len = random.randint(0, len(request))
+s.send(request[:first_part_len])
+time.sleep(0.1)
+s.send(request[first_part_len:])
+
+response = ''
+while 1:
+    response += str(s.recv(1024))
+    print( response )
+    if response.count('\r\n\r\n') == 2:
+        break
+
+lines = response.split('\r\n')
+assert len(lines) == 7
+assert lines[0] == 'HTTP/1.0 200 OK'
+assert lines[1] == 'Content-Type: text/html'
+assert lines[2].startswith('Content-Length: ')
+content_length = int(lines[2][len("Content-Length: "):])
+assert lines[3] == ''
+
+assert len(lines[4]) == content_length
+content = lines[4]
+assert lines[-2:] == ['', '']
+
+print (content)
+
+
+
+request = "GET /cunter HTTP/1.1\r \r\n\r\n"
+
+first_part_len = random.randint(0, len(request)) 
+s.send(request[:first_part_len])                                                                                                                   
+time.sleep(0.1)
+s.send(request[first_part_len:])
+
+response = ''
+while 1:
+    response += s.recv(1024)
+    if response.count('\r\n\r\n') == 2:
+        break
+
+
+print (response)

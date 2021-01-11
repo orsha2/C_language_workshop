@@ -2,8 +2,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "socket_wrapper.h"
 #include "error_mgr.h"
+#include "socket_wrapper.h"
 
 typedef enum _bind_status { BIND_SUCCESS = 0, BIND_FAILED } bind_status;
 
@@ -27,7 +27,6 @@ bool is_end_of_msg(char* received_msg_buffer, int current_msg_length, const char
 
 struct sockaddr_in initialize_sockaddr(const char* str_ip, int port);
 int get_random_port(int lower_limit, int upper_limit);
-
 
 error_code_t initialize_main_socket(int* p_socket, int* p_socket_port)
 {
@@ -98,7 +97,7 @@ struct sockaddr_in initialize_sockaddr(const char* str_ip, int port)
 int get_random_port(int lower_limit, int upper_limit)
 {
   int range = upper_limit - lower_limit + 1;
-  return lower_limit + (rand() % range);
+  return (lower_limit + (rand() % range));
 }
 
 error_code_t send_message(int communication_socket, char* msg_buffer, int msg_size)
@@ -116,7 +115,7 @@ error_code_t send_message(int communication_socket, char* msg_buffer, int msg_si
     }
     msg_buffer += total_bytes_sent;
   }
-  return SUCCESS_CODE;
+  return status;
 }
 
 error_code_t receive_message(int communication_socket, const char* end_of_msg, int end_of_msg_length,
@@ -176,7 +175,7 @@ error_code_t receive_message_segment(int com_socket, char* msg_segment_buffer, i
   bytes_recv = recv(com_socket, msg_segment_buffer, MSG_SEGMENT_SIZE, 0);
 
   if (bytes_recv == 0) {
-      return SOCKET_CONNECTION_CLOSED;
+    return SOCKET_CONNECTION_CLOSED;
   }
 
   status = check_socket_result(bytes_recv, SOCKET_ERROR, SOCKET_RECV_FAILED, __FILE__, __LINE__, __func__);
